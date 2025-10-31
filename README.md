@@ -1,10 +1,6 @@
-# FlyMap - Application Mobile de Spots de Vol de Drones 🚁
+# 🚁 FlyMap - Application Mobile
 
-Application mobile complète pour découvrir, partager et évaluer les meilleurs spots de vol de drones en France.
-
-[![React Native](https://img.shields.io/badge/React%20Native-0.73-blue.svg)](https://reactnative.dev/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.3-blue.svg)](https://www.typescriptlang.org/)
-[![Firebase](https://img.shields.io/badge/Firebase-Latest-orange.svg)](https://firebase.google.com/)
+Application mobile React Native pour découvrir, partager et évaluer les meilleurs spots de vol de drones en France.
 
 ---
 
@@ -36,9 +32,11 @@ Application mobile complète pour découvrir, partager et évaluer les meilleurs
 ## ⚡ Démarrage Rapide
 
 ### Prérequis
-- Node.js 16+
-- Compte Firebase
-- Clé API Géoportail (gratuite)
+
+- **Node.js** 16+
+- **Compte Firebase** (gratuit)
+- **Clé API Géoportail** (gratuite)
+- **Xcode** (iOS, Mac uniquement) ou **Android Studio** (Android)
 
 ### Installation
 
@@ -56,30 +54,23 @@ npm run android  # Pour Android
 npm run ios      # Pour iOS (Mac uniquement)
 ```
 
-**📖 Documentation complète** :
-- **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** 🚀 - **Guide unique et complet** pour configurer Firebase et lancer l'application
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Publication sur les stores AppStore/Google Play
-- [IMPORTANT.md](IMPORTANT.md) - Informations techniques et architecture
-
 ---
 
 ## 📚 Documentation
 
-### Guides Disponibles
+### Guide d'Intégration
 
-1. **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** 🚀 **← COMMENCEZ ICI**
-   Guide unique et complet pour :
-   - Intégration Firebase avec GitHub
-   - Configuration Firebase complète (Auth, Firestore, Storage)
-   - Configuration locale (iOS/Android)
-   - Lancement de l'application
-   - Résolution de problèmes
+👉 **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - **Guide complet de A à Z**
 
-2. **[DEPLOYMENT.md](DEPLOYMENT.md)** 🚀
-   Guide complet de publication AppStore/Google Play
+Ce guide unique vous explique étape par étape :
+- ✅ Installation des outils
+- ✅ Configuration Firebase complète (Auth, Firestore, Storage)
+- ✅ Génération des dossiers natifs (iOS/Android)
+- ✅ Configuration du projet
+- ✅ Lancement de l'application
+- ✅ Résolution de problèmes courants
 
-3. **[IMPORTANT.md](IMPORTANT.md)** ⚠️
-   Informations techniques et architecture du projet
+**Commencez par là !** 🚀
 
 ---
 
@@ -102,23 +93,22 @@ Avant de lancer l'application, vous DEVEZ configurer :
 - ✅ Firebase (Authentication, Firestore, Storage)
 - ✅ Google Sign-In (Client ID Web)
 - ✅ Clé API Géoportail
-- ✅ Icônes et ressources visuelles
+- ✅ Fichiers de configuration Firebase (GoogleService-Info.plist, google-services.json)
 
-Consultez :
-- **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** pour la configuration complète (Firebase, local, lancement)
+👉 **Suivez [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md) pour toutes les étapes détaillées**
 
 ---
 
 ## 📱 Screenshots
 
-*À venir après génération des screenshots*
+*À venir*
 
 ---
 
 ## 🤝 Contribution
 
 Ce projet est privé. Pour toute question :
-- Consultez la documentation
+- Consultez [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)
 - Vérifiez les commentaires dans le code
 - Contactez l'équipe de développement
 
@@ -134,6 +124,8 @@ Private - Tous droits réservés
 
 ## 🎉 Prochaine Étape
 
-👉 **Commencez par lire [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - Guide unique et complet pour tout configurer
+👉 **Commencez par lire [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - Guide complet de A à Z
 
+---
 
+*Application développée avec ❤️ en React Native*
