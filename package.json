@@ -7,8 +7,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint .",
-    "install": "npm install --legacy-peer-deps"
+    "lint": "eslint ."
   },
   "dependencies": {
     "react": "18.3.1",
