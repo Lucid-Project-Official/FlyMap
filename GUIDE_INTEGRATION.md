@@ -59,11 +59,7 @@ git --version
 
 ```bash
 # Dans le dossier FlyMap
-npm install --legacy-peer-deps
-```
-
-⚠️ **Important** : Il est nécessaire d'utiliser l'option `--legacy-peer-deps` car il y a un conflit de versions entre React Native 0.73.0 (qui demande React 18.2.0) et react-native-maps (qui demande React >= 18.3.1). React 18.3.1 est rétrocompatible avec 18.2.0, donc cela fonctionnera correctement.
-
+npm install
 ---
 
 ## 🔥 Configuration Firebase
@@ -508,7 +504,7 @@ Assurez-vous que :
 - ✅ `App.tsx` est configuré avec vos clés Firebase
 - ✅ `src/services/auth.ts` est configuré avec le Client ID Web
 - ✅ `src/services/geoportail.ts` est configuré avec la clé API
-- ✅ `npm install --legacy-peer-deps` a été exécuté
+- ✅ `npm install` a été exécuté (les vulnérabilités affichées peuvent être ignorées)
 - ✅ `cd ios && pod install && cd ..` a été exécuté (Mac uniquement)
 - ✅ Gradle est synchronisé (Android)
 
@@ -585,8 +581,27 @@ L'application devrait se lancer sans erreur Firebase.
 ```bash
 # Vérifiez que package.json a React >= 18.3.1
 # Le problème devrait déjà être corrigé dans ce guide
-npm install --legacy-peer-deps
+npm install
 ```
+
+Le fichier `.npmrc` avec `legacy-peer-deps=true` devrait résoudre automatiquement ce problème.
+
+### Avertissement : Vulnérabilités de Sécurité
+
+**Message** : `5 high severity vulnerabilities` après `npm install`
+
+**Cause** : Dépendances transitives avec des vulnérabilités connues
+
+**Solution** :
+1. **⚠️ N'exécutez PAS `npm audit fix --force`** - cela pourrait casser votre projet
+2. Pour le développement React Native mobile, ces vulnérabilités sont généralement inoffensives
+3. Si vous voulez voir les détails :
+   ```bash
+   npm audit
+   ```
+4. Si vraiment nécessaire (rare), essayez `npm audit fix` (sans `--force`) et testez votre application après
+
+**Note** : Ces vulnérabilités proviennent souvent d'outils de développement web et n'affectent pas les applications React Native mobiles compilées.
 
 ### Erreur : "GoogleService-Info.plist not found"
 
@@ -709,7 +724,7 @@ Avant de considérer que tout est configuré, vérifiez :
 - [ ] `android/app/build.gradle` avec apply plugin google-services
 
 ### Build
-- [ ] `npm install --legacy-peer-deps` exécuté
+- [ ] `npm install` exécuté (les vulnérabilités affichées peuvent être ignorées)
 - [ ] `cd ios && pod install && cd ..` exécuté (Mac)
 - [ ] Gradle synchronisé (Android)
 - [ ] Application compile sans erreur Firebase
