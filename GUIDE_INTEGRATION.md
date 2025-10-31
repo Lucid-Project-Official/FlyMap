@@ -588,7 +588,11 @@ Le fichier `.npmrc` avec `legacy-peer-deps=true` devrait résoudre automatiqueme
 
 ### Avertissement : Vulnérabilités de Sécurité
 
-**Message** : `5 high severity vulnerabilities` après `npm install`
+**Message** : `5 high severity vulnerabilities` après `npm install` (si cela apparaît)
+
+**✅ Bonne nouvelle** : Si vous voyez `found 0 vulnerabilities`, c'est parfait ! Vous n'avez rien à faire.
+
+**Si vous voyez des vulnérabilités :**
 
 **Cause** : Dépendances transitives avec des vulnérabilités connues
 
@@ -601,7 +605,7 @@ Le fichier `.npmrc` avec `legacy-peer-deps=true` devrait résoudre automatiqueme
    ```
 4. Si vraiment nécessaire (rare), essayez `npm audit fix` (sans `--force`) et testez votre application après
 
-**Note** : Ces vulnérabilités proviennent souvent d'outils de développement web et n'affectent pas les applications React Native mobiles compilées.
+**Note** : Ces vulnérabilités proviennent souvent d'outils de développement web et n'affectent pas les applications React Native mobiles compilées. Si vous avez `found 0 vulnerabilities`, c'est excellent !
 
 ### Erreur : "GoogleService-Info.plist not found"
 
