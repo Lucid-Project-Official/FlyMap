@@ -49,17 +49,17 @@ git clone <votre-repo>
 # 2. Installez les dépendances
 npm install
 
-# 3. Configurez Firebase (voir SETUP.md)
+# 3. Suivez le guide d'intégration complet
 # 4. Lancez l'application
 
 npm run android  # Pour Android
 npm run ios      # Pour iOS (Mac uniquement)
 ```
 
-**📖 Pour plus de détails** :
-- [QUICKSTART.md](QUICKSTART.md) - Démarrage en 5 minutes
-- [SETUP.md](SETUP.md) - Configuration détaillée
-- [DEPLOYMENT.md](DEPLOYMENT.md) - Publication sur les stores
+**📖 Documentation complète** :
+- **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** 🚀 - **Guide unique et complet** pour configurer Firebase et lancer l'application
+- [DEPLOYMENT.md](DEPLOYMENT.md) - Publication sur les stores AppStore/Google Play
+- [IMPORTANT.md](IMPORTANT.md) - Informations techniques et architecture
 
 ---
 
@@ -67,17 +67,19 @@ npm run ios      # Pour iOS (Mac uniquement)
 
 ### Guides Disponibles
 
-1. **[QUICKSTART.md](QUICKSTART.md)** ⚡
-   Démarrage ultra-rapide en 5 minutes
+1. **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** 🚀 **← COMMENCEZ ICI**
+   Guide unique et complet pour :
+   - Intégration Firebase avec GitHub
+   - Configuration Firebase complète (Auth, Firestore, Storage)
+   - Configuration locale (iOS/Android)
+   - Lancement de l'application
+   - Résolution de problèmes
 
-2. **[SETUP.md](SETUP.md)** 🔧
-   Configuration complète et résolution de problèmes
-
-3. **[DEPLOYMENT.md](DEPLOYMENT.md)** 🚀
+2. **[DEPLOYMENT.md](DEPLOYMENT.md)** 🚀
    Guide complet de publication AppStore/Google Play
 
-4. **[IMPORTANT.md](IMPORTANT.md)** ⚠️
-   Informations critiques et architecture
+3. **[IMPORTANT.md](IMPORTANT.md)** ⚠️
+   Informations techniques et architecture du projet
 
 ---
 
@@ -102,7 +104,8 @@ Avant de lancer l'application, vous DEVEZ configurer :
 - ✅ Clé API Géoportail
 - ✅ Icônes et ressources visuelles
 
-Consultez [SETUP.md](SETUP.md) pour les instructions détaillées.
+Consultez :
+- **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** pour la configuration complète (Firebase, local, lancement)
 
 ---
 
@@ -131,6 +134,6 @@ Private - Tous droits réservés
 
 ## 🎉 Prochaine Étape
 
-👉 **Commencez par lire [QUICKSTART.md](QUICKSTART.md)**
+👉 **Commencez par lire [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - Guide unique et complet pour tout configurer
 
 
