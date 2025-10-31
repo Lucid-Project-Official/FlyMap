@@ -45,7 +45,7 @@ Application mobile React Native pour découvrir, partager et évaluer les meille
 git clone <votre-repo>
 
 # 2. Installez les dépendances
-npm install
+npm install --legacy-peer-deps
 
 # 3. Suivez le guide d'intégration complet
 # 4. Lancez l'application

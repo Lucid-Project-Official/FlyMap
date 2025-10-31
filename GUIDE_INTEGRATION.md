@@ -59,8 +59,10 @@ git --version
 
 ```bash
 # Dans le dossier FlyMap
-npm install
+npm install --legacy-peer-deps
 ```
+
+⚠️ **Important** : Il est nécessaire d'utiliser l'option `--legacy-peer-deps` car il y a un conflit de versions entre React Native 0.73.0 (qui demande React 18.2.0) et react-native-maps (qui demande React >= 18.3.1). React 18.3.1 est rétrocompatible avec 18.2.0, donc cela fonctionnera correctement.
 
 ---
 
@@ -506,7 +508,7 @@ Assurez-vous que :
 - ✅ `App.tsx` est configuré avec vos clés Firebase
 - ✅ `src/services/auth.ts` est configuré avec le Client ID Web
 - ✅ `src/services/geoportail.ts` est configuré avec la clé API
-- ✅ `npm install` a été exécuté
+- ✅ `npm install --legacy-peer-deps` a été exécuté
 - ✅ `cd ios && pod install && cd ..` a été exécuté (Mac uniquement)
 - ✅ Gradle est synchronisé (Android)
 
@@ -583,7 +585,7 @@ L'application devrait se lancer sans erreur Firebase.
 ```bash
 # Vérifiez que package.json a React >= 18.3.1
 # Le problème devrait déjà être corrigé dans ce guide
-npm install
+npm install --legacy-peer-deps
 ```
 
 ### Erreur : "GoogleService-Info.plist not found"
@@ -707,7 +709,7 @@ Avant de considérer que tout est configuré, vérifiez :
 - [ ] `android/app/build.gradle` avec apply plugin google-services
 
 ### Build
-- [ ] `npm install` exécuté
+- [ ] `npm install --legacy-peer-deps` exécuté
 - [ ] `cd ios && pod install && cd ..` exécuté (Mac)
 - [ ] Gradle synchronisé (Android)
 - [ ] Application compile sans erreur Firebase
