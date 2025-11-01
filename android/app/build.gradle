@@ -107,7 +107,8 @@ android {
                 '**/libreact_nativemodule_core.so',
                 '**/libreactnativeblob.so',
                 '**/libjscexecutor.so',
-                '**/libjsc.so'
+                '**/libjsc.so',
+                '**/lib*.so'
             ]
             // S'assurer que toutes les architectures sont incluses
             // Ne pas exclure de bibliotheques - IMPORTANT: inclure libreact_featureflagsjni.so
