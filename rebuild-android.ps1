@@ -19,11 +19,24 @@ cd android
 if (Test-Path "app\build") {
     Remove-Item "app\build" -Recurse -Force -ErrorAction SilentlyContinue
 }
+# Ne pas supprimer build/generated/autolinking - nécessaire pour le build
 if (Test-Path "build") {
-    Remove-Item "build" -Recurse -Force -ErrorAction SilentlyContinue
+    # Supprimer seulement build sauf build/generated/autolinking
+    Get-ChildItem "build" -Exclude "generated" | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    if (Test-Path "build\generated") {
+        Get-ChildItem "build\generated" -Exclude "autolinking" | Remove-Item -Recurse -Force -ErrorAction SilentlyContinue
+    }
 }
 if (Test-Path ".gradle") {
     Remove-Item ".gradle" -Recurse -Force -ErrorAction SilentlyContinue
+}
+
+# S'assurer que autolinking.json existe
+if (-not (Test-Path "build\generated\autolinking")) {
+    New-Item -ItemType Directory -Force -Path "build\generated\autolinking" | Out-Null
+}
+if (-not (Test-Path "build\generated\autolinking\autolinking.json")) {
+    Set-Content -Path "build\generated\autolinking\autolinking.json" -Value "[]"
 }
 
 # Nettoyer avec Gradle
