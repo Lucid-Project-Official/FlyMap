@@ -3,8 +3,16 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, View, ActivityIndicator, Text, ScrollView } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
-import firebase from '@react-native-firebase/app';
+
+// Imports avec gestion d'erreur pour éviter les crashes
+let Icon: any;
+try {
+  Icon = require('react-native-vector-icons/MaterialIcons').default;
+} catch (e) {
+  console.warn('[App] react-native-vector-icons non disponible, utilisation d\'un fallback');
+  Icon = ({ name, size, color, style }: any) => <View style={[{ width: size, height: size, backgroundColor: color }, style]} />;
+}
+
 import { AuthService } from './src/services/auth';
 
 // Console.log pour débogage
@@ -58,33 +66,58 @@ class ErrorBoundary extends Component<
   }
 }
 
-// Screens
-import LoginScreen from './src/screens/LoginScreen';
-import MapScreen from './src/screens/MapScreen';
-import SearchScreen from './src/screens/SearchScreen';
-import AddSpotScreen from './src/screens/AddSpotScreen';
-import ProfileScreen from './src/screens/ProfileScreen';
-import SpotDetailScreen from './src/screens/SpotDetailScreen';
+// Screens avec gestion d'erreur pour éviter les crashes si un screen a un problème
+let LoginScreen: any;
+let MapScreen: any;
+let SearchScreen: any;
+let AddSpotScreen: any;
+let ProfileScreen: any;
+let SpotDetailScreen: any;
+
+try {
+  LoginScreen = require('./src/screens/LoginScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de LoginScreen:', e);
+  LoginScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
+
+try {
+  MapScreen = require('./src/screens/MapScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de MapScreen:', e);
+  MapScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
+
+try {
+  SearchScreen = require('./src/screens/SearchScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de SearchScreen:', e);
+  SearchScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
+
+try {
+  AddSpotScreen = require('./src/screens/AddSpotScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de AddSpotScreen:', e);
+  AddSpotScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
+
+try {
+  ProfileScreen = require('./src/screens/ProfileScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de ProfileScreen:', e);
+  ProfileScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
+
+try {
+  SpotDetailScreen = require('./src/screens/SpotDetailScreen').default;
+} catch (e) {
+  console.error('[App] Erreur lors du chargement de SpotDetailScreen:', e);
+  SpotDetailScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
+}
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-
-// Firebase est initialisé automatiquement via google-services.json (Android) et GoogleService-Info.plist (iOS)
-// Aucune configuration manuelle n'est nécessaire
-try {
-  log('Initialisation Firebase...');
-  if (!firebase.apps.length) {
-    log('Firebase non initialisé, initialisation...');
-    // Pour l'instant, Firebase est initialisé automatiquement via google-services.json
-    // Ne pas réinitialiser manuellement car cela peut causer des erreurs
-    log('Firebase sera initialisé automatiquement via google-services.json');
-  } else {
-    log('Firebase déjà initialisé');
-  }
-} catch (error) {
-  log('Erreur lors de l\'initialisation Firebase:', error);
-  // Ne pas faire planter l'app si Firebase n'est pas configuré
-}
 
 function MainTabs() {
   log('MainTabs: Composant rendu');
@@ -153,13 +186,20 @@ export default function App() {
   useEffect(() => {
     log('App: Début de l\'initialisation');
     
-    // Initialise les services avec gestion d'erreur
-    AuthService.initialize()
-      .then(() => {
+    let unsubscribe: (() => void) | null = null;
+    let mounted = true;
+    
+    // Initialise les services avec gestion d'erreur robuste
+    (async () => {
+      try {
+        await AuthService.initialize();
         log('App: AuthService initialisé avec succès');
         
+        if (!mounted) return;
+        
         // Écoute les changements d'authentification
-        const unsubscribe = AuthService.onAuthStateChanged((user) => {
+        unsubscribe = AuthService.onAuthStateChanged((user) => {
+          if (!mounted) return;
           log('App: État d\'authentification changé', { 
             hasUser: !!user, 
             userId: user?.uid 
@@ -169,28 +209,42 @@ export default function App() {
         });
 
         // Vérifie l'état initial
-        const currentUser = AuthService.getCurrentUser();
-        log('App: Utilisateur actuel', { 
-          hasUser: !!currentUser, 
-          userId: currentUser?.uid 
-        });
-        
-        if (currentUser) {
-          setAuthenticated(true);
+        try {
+          const currentUser = AuthService.getCurrentUser();
+          log('App: Utilisateur actuel', { 
+            hasUser: !!currentUser, 
+            userId: currentUser?.uid 
+          });
+          
+          if (currentUser && mounted) {
+            setAuthenticated(true);
+          }
+          if (mounted) {
+            setLoading(false);
+          }
+        } catch (userError) {
+          log('App: Erreur lors de la vérification de l\'utilisateur', userError);
+          if (mounted) {
+            setLoading(false);
+          }
         }
-        setLoading(false);
-
-        return () => {
-          log('App: Nettoyage - désabonnement de onAuthStateChanged');
-          unsubscribe();
-        };
-      })
-      .catch((err) => {
+      } catch (err: any) {
         log('App: Erreur lors de l\'initialisation', err);
-        setError(err?.message || 'Erreur lors de l\'initialisation');
-        setLoading(false);
-        // Continue même en cas d'erreur pour permettre le mode hors ligne
-      });
+        if (mounted) {
+          setError(err?.message || 'Erreur lors de l\'initialisation');
+          setLoading(false);
+          // Continue même en cas d'erreur pour permettre le mode hors ligne
+        }
+      }
+    })();
+
+    return () => {
+      mounted = false;
+      log('App: Nettoyage - désabonnement de onAuthStateChanged');
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
   }, []);
 
   if (loading) {

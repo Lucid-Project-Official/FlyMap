@@ -156,7 +156,12 @@ export class AuthService {
    * Obtient l'utilisateur actuellement connecté
    */
   static getCurrentUser(): FirebaseAuthTypes.User | null {
-    return auth().currentUser;
+    try {
+      return auth().currentUser;
+    } catch (error) {
+      console.warn('[AuthService] Erreur lors de la récupération de l\'utilisateur actuel:', error);
+      return null;
+    }
   }
 
   /**
@@ -164,8 +169,14 @@ export class AuthService {
    */
   static onAuthStateChanged(
     callback: (user: FirebaseAuthTypes.User | null) => void
-  ) {
-    return auth().onAuthStateChanged(callback);
+  ): () => void {
+    try {
+      return auth().onAuthStateChanged(callback);
+    } catch (error) {
+      console.error('[AuthService] Erreur lors de l\'abonnement à onAuthStateChanged:', error);
+      // Retourne une fonction de désabonnement vide en cas d'erreur
+      return () => {};
+    }
   }
 }
 

@@ -8,9 +8,24 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+// Import avec gestion d'erreur
+let Icon: any;
+try {
+  Icon = require('react-native-vector-icons/MaterialIcons').default;
+} catch (e) {
+  Icon = ({ name, size, color, style }: any) => <View style={[{ width: size, height: size }, style]} />;
+}
+
 import { AuthService } from '../services/auth';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
+
+// Import Apple Auth avec gestion d'erreur
+let appleAuth: any;
+try {
+  appleAuth = require('@invertase/react-native-apple-authentication').appleAuth;
+} catch (e) {
+  console.warn('[LoginScreen] Apple Auth non disponible');
+  appleAuth = { isSupported: () => false, performRequest: () => Promise.reject('Not available') };
+}
 
 export default function LoginScreen() {
   console.log('[LoginScreen] Composant rendu');
