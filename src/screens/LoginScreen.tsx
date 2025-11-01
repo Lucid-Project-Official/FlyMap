@@ -13,6 +13,8 @@ import { AuthService } from '../services/auth';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 export default function LoginScreen() {
+  console.log('[LoginScreen] Composant rendu');
+  
   const [loading, setLoading] = useState(false);
 
   const handleGoogleSignIn = async () => {

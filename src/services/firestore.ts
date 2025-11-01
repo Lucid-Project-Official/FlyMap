@@ -38,15 +38,23 @@ export class FirestoreService {
 
   static async getAllSpots(): Promise<Spot[]> {
     try {
+      console.log('[FirestoreService] Début getAllSpots');
       const snapshot = await firestore().collection('spots').orderBy('createdAt', 'desc').get();
-      return snapshot.docs.map(doc => ({
+      console.log('[FirestoreService] Spots récupérés:', snapshot.docs.length);
+      const spots = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data()?.createdAt?.toDate() || new Date(),
         updatedAt: doc.data()?.updatedAt?.toDate() || new Date(),
       })) as Spot[];
-    } catch (error) {
-      console.error('Error getting all spots:', error);
+      return spots;
+    } catch (error: any) {
+      console.error('[FirestoreService] Erreur getAllSpots:', error);
+      // Si Firebase n'est pas configuré, retourner un tableau vide au lieu de planter
+      if (error?.code === 'unavailable' || error?.message?.includes('not configured') || error?.message?.includes('initialize')) {
+        console.warn('[FirestoreService] Firebase non configuré, retour tableau vide');
+        return [];
+      }
       throw error;
     }
   }

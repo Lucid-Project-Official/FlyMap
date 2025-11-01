@@ -2,10 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { StatusBar, View, ActivityIndicator } from 'react-native';
+import { StatusBar, View, ActivityIndicator, Text } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import firebase from '@react-native-firebase/app';
 import { AuthService } from './src/services/auth';
+
+// Console.log pour débogage
+const log = (message: string, data?: any) => {
+  console.log(`[FlyMap App] ${message}`, data || '');
+};
 
 // Screens
 import LoginScreen from './src/screens/LoginScreen';
@@ -29,11 +34,24 @@ const firebaseConfig = {
 };
 
 // Initialise Firebase si ce n'est pas déjà fait
-if (!firebase.apps.length) {
-  firebase.initializeApp(firebaseConfig);
+try {
+  log('Initialisation Firebase...');
+  if (!firebase.apps.length) {
+    log('Firebase non initialisé, initialisation...');
+    // Pour l'instant, Firebase est initialisé automatiquement via google-services.json
+    // Ne pas réinitialiser manuellement car cela peut causer des erreurs
+    log('Firebase sera initialisé automatiquement via google-services.json');
+  } else {
+    log('Firebase déjà initialisé');
+  }
+} catch (error) {
+  log('Erreur lors de l\'initialisation Firebase:', error);
+  // Ne pas faire planter l'app si Firebase n'est pas configuré
 }
 
 function MainTabs() {
+  log('MainTabs: Composant rendu');
+  
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -79,30 +97,90 @@ function MainTabs() {
 export default function App() {
   const [loading, setLoading] = useState(true);
   const [authenticated, setAuthenticated] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    // Initialise les services
-    AuthService.initialize().then(() => {
-      // Écoute les changements d'authentification
-      const unsubscribe = AuthService.onAuthStateChanged((user) => {
-        setAuthenticated(!!user);
-        setLoading(false);
-      });
+    log('App: Début de l\'initialisation');
+    
+    // Initialise les services avec gestion d'erreur
+    AuthService.initialize()
+      .then(() => {
+        log('App: AuthService initialisé avec succès');
+        
+        // Écoute les changements d'authentification
+        const unsubscribe = AuthService.onAuthStateChanged((user) => {
+          log('App: État d\'authentification changé', { 
+            hasUser: !!user, 
+            userId: user?.uid 
+          });
+          setAuthenticated(!!user);
+          setLoading(false);
+        });
 
-      return () => unsubscribe();
-    });
+        // Vérifie l'état initial
+        const currentUser = AuthService.getCurrentUser();
+        log('App: Utilisateur actuel', { 
+          hasUser: !!currentUser, 
+          userId: currentUser?.uid 
+        });
+        
+        if (currentUser) {
+          setAuthenticated(true);
+        }
+        setLoading(false);
+
+        return () => {
+          log('App: Nettoyage - désabonnement de onAuthStateChanged');
+          unsubscribe();
+        };
+      })
+      .catch((err) => {
+        log('App: Erreur lors de l\'initialisation', err);
+        setError(err?.message || 'Erreur lors de l\'initialisation');
+        setLoading(false);
+        // Continue même en cas d'erreur pour permettre le mode hors ligne
+      });
   }, []);
 
   if (loading) {
+    log('App: Affichage de l\'écran de chargement');
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
         <ActivityIndicator size="large" color="#007AFF" />
+        <Text style={{ marginTop: 10, color: '#666' }}>Chargement...</Text>
       </View>
     );
   }
 
+  if (error) {
+    log('App: Affichage de l\'écran d\'erreur', error);
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', padding: 20 }}>
+        <Text style={{ fontSize: 18, fontWeight: 'bold', marginBottom: 10, color: '#FF0000' }}>
+          Erreur
+        </Text>
+        <Text style={{ textAlign: 'center', color: '#666', marginBottom: 20 }}>
+          {error}
+        </Text>
+        <Text style={{ textAlign: 'center', color: '#999', fontSize: 12 }}>
+          L'application peut continuer en mode hors ligne
+        </Text>
+      </View>
+    );
+  }
+
+  log('App: Rendu de l\'application', { authenticated, loading });
+  
+  if (!authenticated) {
+    log('App: Navigation vers écran de connexion');
+  } else {
+    log('App: Navigation vers onglets principaux');
+  }
+  
   return (
-    <NavigationContainer>
+    <NavigationContainer
+      onReady={() => log('App: NavigationContainer prêt')}
+      onStateChange={() => log('App: État de navigation changé')}>
       <StatusBar barStyle="dark-content" />
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {!authenticated ? (

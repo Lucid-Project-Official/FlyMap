@@ -18,11 +18,35 @@ export class AuthService {
    */
   static async initialize() {
     try {
-      await GoogleSignin.configure();
+      console.log('[AuthService] Début de l\'initialisation...');
+      
+      // Vérifie si Firebase Auth est disponible
+      try {
+        const authInstance = auth();
+        console.log('[AuthService] Firebase Auth disponible');
+      } catch (firebaseError) {
+        console.warn('[AuthService] Firebase Auth non disponible:', firebaseError);
+        // Continue même si Firebase n'est pas configuré
+      }
+
+      // Configure Google Sign-In seulement si webClientId n'est pas la valeur par défaut
+      const webClientId = 'YOUR_WEB_CLIENT_ID';
+      if (webClientId && webClientId !== 'YOUR_WEB_CLIENT_ID') {
+        console.log('[AuthService] Configuration de Google Sign-In...');
+        await GoogleSignin.configure({
+          webClientId,
+        });
+        console.log('[AuthService] Google Sign-In configuré');
+      } else {
+        console.warn('[AuthService] webClientId non configuré, Google Sign-In sera désactivé');
+      }
+      
+      console.log('[AuthService] Initialisation terminée avec succès');
       return true;
     } catch (error) {
-      console.error('Error initializing auth:', error);
-      return false;
+      console.error('[AuthService] Erreur lors de l\'initialisation:', error);
+      // Retourne true quand même pour ne pas bloquer l'app
+      return true;
     }
   }
 

@@ -16,6 +16,8 @@ import { Spot } from '../types';
 import SpotMarker from '../components/SpotMarker';
 
 export default function MapScreen({ navigation }: any) {
+  console.log('[MapScreen] Composant rendu');
+  
   const [spots, setSpots] = useState<Spot[]>([]);
   const [loading, setLoading] = useState(true);
   const [region, setRegion] = useState({
@@ -26,48 +28,75 @@ export default function MapScreen({ navigation }: any) {
   });
 
   useEffect(() => {
-    loadSpots();
-    requestLocationPermission();
+    console.log('[MapScreen] useEffect déclenché');
+    try {
+      loadSpots();
+      requestLocationPermission();
+    } catch (error) {
+      console.error('[MapScreen] Erreur dans useEffect:', error);
+    }
   }, []);
 
   const requestLocationPermission = async () => {
-    const permission =
-      Platform.OS === 'ios'
-        ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
-        : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+    try {
+      console.log('[MapScreen] Demande de permission de localisation');
+      const permission =
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
 
-    const result = await request(permission);
-    if (result === RESULTS.GRANTED) {
-      getCurrentLocation();
+      const result = await request(permission);
+      console.log('[MapScreen] Résultat permission:', result);
+      if (result === RESULTS.GRANTED) {
+        getCurrentLocation();
+      } else {
+        console.warn('[MapScreen] Permission de localisation refusée:', result);
+      }
+    } catch (error) {
+      console.error('[MapScreen] Erreur lors de la demande de permission:', error);
     }
   };
 
   const getCurrentLocation = () => {
-    Geolocation.getCurrentPosition(
-      (position) => {
-        setRegion({
-          latitude: position.coords.latitude,
-          longitude: position.coords.longitude,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        });
-      },
-      (error) => {
-        console.error('Error getting location:', error);
-      },
-      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
-    );
+    try {
+      console.log('[MapScreen] Obtention de la position actuelle');
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log('[MapScreen] Position obtenue:', position.coords);
+          setRegion({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          });
+        },
+        (error) => {
+          console.error('[MapScreen] Erreur lors de l\'obtention de la position:', error);
+          // Continue avec la position par défaut
+        },
+        { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+    } catch (error) {
+      console.error('[MapScreen] Erreur dans getCurrentLocation:', error);
+    }
   };
 
   const loadSpots = async () => {
     try {
+      console.log('[MapScreen] Début du chargement des spots');
       setLoading(true);
       const allSpots = await FirestoreService.getAllSpots();
+      console.log('[MapScreen] Spots chargés:', allSpots.length);
       setSpots(allSpots);
     } catch (error) {
-      Alert.alert('Erreur', 'Impossible de charger les spots');
+      console.error('[MapScreen] Erreur lors du chargement des spots:', error);
+      // Ne pas afficher d'alerte si Firestore n'est pas configuré
+      if (error instanceof Error && !error.message.includes('not configured')) {
+        Alert.alert('Erreur', 'Impossible de charger les spots');
+      }
     } finally {
       setLoading(false);
+      console.log('[MapScreen] Chargement terminé');
     }
   };
 
