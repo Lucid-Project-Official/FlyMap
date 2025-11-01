@@ -14,10 +14,8 @@ if (Test-Path "$env:LOCALAPPDATA\Temp\haste-*") {
 # Nettoyer le build Android
 Write-Host "2. Nettoyage du build Android..." -ForegroundColor Yellow
 cd android
-./gradlew clean --no-daemon
-./gradlew cleanBuildCache --no-daemon
 
-# Supprimer les dossiers de build
+# Supprimer les dossiers de build manuellement
 if (Test-Path "app\build") {
     Remove-Item "app\build" -Recurse -Force -ErrorAction SilentlyContinue
 }
@@ -27,6 +25,9 @@ if (Test-Path "build") {
 if (Test-Path ".gradle") {
     Remove-Item ".gradle" -Recurse -Force -ErrorAction SilentlyContinue
 }
+
+# Nettoyer avec Gradle
+./gradlew clean --no-daemon
 
 cd ..
 
