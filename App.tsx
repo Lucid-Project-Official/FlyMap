@@ -69,17 +69,8 @@ import SpotDetailScreen from './src/screens/SpotDetailScreen';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Configuration Firebase (à remplacer par vos propres clés)
-const firebaseConfig = {
-  apiKey: 'YOUR_API_KEY',
-  authDomain: 'YOUR_AUTH_DOMAIN',
-  projectId: 'YOUR_PROJECT_ID',
-  storageBucket: 'YOUR_STORAGE_BUCKET',
-  messagingSenderId: 'YOUR_MESSAGING_SENDER_ID',
-  appId: 'YOUR_APP_ID',
-};
-
-// Initialise Firebase si ce n'est pas déjà fait
+// Firebase est initialisé automatiquement via google-services.json (Android) et GoogleService-Info.plist (iOS)
+// Aucune configuration manuelle n'est nécessaire
 try {
   log('Initialisation Firebase...');
   if (!firebase.apps.length) {

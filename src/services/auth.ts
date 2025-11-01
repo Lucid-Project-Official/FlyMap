@@ -7,10 +7,7 @@ import {
 import firestore from '@react-native-firebase/firestore';
 import { User } from '../types';
 
-// Configuration Google Sign-In
-GoogleSignin.configure({
-  webClientId: 'YOUR_WEB_CLIENT_ID', // À remplacer
-});
+// Configuration Google Sign-In - sera configuré dynamiquement dans initialize()
 
 export class AuthService {
   /**
@@ -29,17 +26,8 @@ export class AuthService {
         // Continue même si Firebase n'est pas configuré
       }
 
-      // Configure Google Sign-In seulement si webClientId n'est pas la valeur par défaut
-      const webClientId = 'YOUR_WEB_CLIENT_ID';
-      if (webClientId && webClientId !== 'YOUR_WEB_CLIENT_ID') {
-        console.log('[AuthService] Configuration de Google Sign-In...');
-        await GoogleSignin.configure({
-          webClientId,
-        });
-        console.log('[AuthService] Google Sign-In configuré');
-      } else {
-        console.warn('[AuthService] webClientId non configuré, Google Sign-In sera désactivé');
-      }
+      // Google Sign-In sera configuré dynamiquement lors de la connexion
+      console.log('[AuthService] Google Sign-In sera configuré à la première utilisation');
       
       console.log('[AuthService] Initialisation terminée avec succès');
       return true;
@@ -59,6 +47,8 @@ export class AuthService {
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
       
       // Obtient l'ID token de l'utilisateur
+      // Note: GoogleSignin signe automatiquement si SHA-1 est configuré dans Firebase
+      // Pour utiliser webClientId, vous devez le configurer dans Firebase Console
       const { idToken } = await GoogleSignin.signIn();
       
       // Crée une credential Google avec l'ID token
@@ -71,7 +61,15 @@ export class AuthService {
       return await this.createOrUpdateUser(userCredential.user);
     } catch (error: any) {
       console.error('Google Sign-In Error:', error);
-      throw new Error(error.message || 'Erreur lors de la connexion Google');
+      
+      // Message d'erreur plus explicite
+      let errorMessage = error.message || 'Erreur lors de la connexion Google';
+      
+      if (error.code === 'DEVELOPER_ERROR' || error.message?.includes('configure')) {
+        errorMessage = 'Google Sign-In n\'est pas configuré. Veuillez ajouter votre SHA-1 dans Firebase Console ou configurer le webClientId.';
+      }
+      
+      throw new Error(errorMessage);
     }
   }
 

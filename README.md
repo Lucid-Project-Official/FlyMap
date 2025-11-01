@@ -91,11 +91,27 @@ src/
 Avant de lancer l'application, vous DEVEZ configurer :
 
 - ✅ Firebase (Authentication, Firestore, Storage)
-- ✅ Google Sign-In (Client ID Web)
+- ✅ Google Sign-In (Client ID Web ou SHA-1)
 - ✅ Clé API Géoportail
 - ✅ Fichiers de configuration Firebase (GoogleService-Info.plist, google-services.json)
 
 👉 **Suivez [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md) pour toutes les étapes détaillées**
+
+### ⚠️ Configuration Google Sign-In
+
+Pour que Google Sign-In fonctionne, vous avez **deux options** :
+
+1. **Option 1 : SHA-1 (Recommandé pour le développement)**
+   - Générez votre SHA-1 de debug : `keytool -list -v -keystore android/app/debug.keystore -alias androiddebugkey -storepass android -keypass android`
+   - Ajoutez-le dans Firebase Console > Project Settings > Your Apps
+   - Google Sign-In fonctionnera automatiquement
+
+2. **Option 2 : Web Client ID (Recommandé pour la production)**
+   - Récupérez votre Web Client ID depuis Firebase Console > Authentication > Google
+   - Modifiez `src/services/auth.ts` pour ajouter le webClientId
+   - Consultez [GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md) pour plus de détails
+
+**Note** : L'application ne crash plus si Google Sign-In n'est pas configuré, mais la connexion Google sera indisponible.
 
 ---
 
