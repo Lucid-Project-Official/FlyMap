@@ -14,7 +14,7 @@ module.exports = function (api) {
   return {
     presets: [
       [
-        'metro-react-native-babel-preset',
+        'module:metro-react-native-babel-preset',
         {
           unstable_allowRequireContext: true,
         },
