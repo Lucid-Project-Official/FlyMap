@@ -140,8 +140,9 @@ dependencies {
     implementation project(':react_native_screens')
     implementation project(':react_native_vector_icons')
     implementation project(':react_native_webview')
-    implementation project(':react_native_reanimated')
+    // Temporairement commente pour app Hello World - necessite newArchEnabled=true
+    // implementation project(':react_native_reanimated')
     implementation project(':react_native_svg')
-    implementation project(':react_native_worklets')
+    // implementation project(':react-native-worklets')
 }
 

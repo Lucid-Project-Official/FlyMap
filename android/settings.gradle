@@ -52,11 +52,12 @@ project(':react_native_vector_icons').projectDir = new File('../node_modules/rea
 include ':react_native_webview'
 project(':react_native_webview').projectDir = new File('../node_modules/react-native-webview/android')
 
-include ':react_native_reanimated'
-project(':react_native_reanimated').projectDir = new File('../node_modules/react-native-reanimated/android')
+// Temporairement commente pour app Hello World - necessite newArchEnabled=true
+// include ':react_native_reanimated'
+// project(':react_native_reanimated').projectDir = new File('../node_modules/react-native-reanimated/android')
 
 include ':react_native_svg'
 project(':react_native_svg').projectDir = new File('../node_modules/react-native-svg/android')
 
-include ':react_native_worklets'
-project(':react_native_worklets').projectDir = new File('../node_modules/react-native-worklets/android')
+// include ':react-native-worklets'
+// project(':react-native-worklets').projectDir = new File('../node_modules/react-native-worklets/android')
