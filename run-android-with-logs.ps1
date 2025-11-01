@@ -1,4 +1,4 @@
-# Script PowerShell pour lancer Android avec logs adb automatiques
+﻿# Script PowerShell pour lancer Android avec logs adb automatiques
 # Ce script garantit que TOUTES les dependances sont installees et compilees
 
 param(
@@ -25,11 +25,31 @@ if (-not $adbPath) {
 Write-Host "1. Verification de la connexion Android..." -ForegroundColor Yellow
 $devices = adb devices | Select-String -Pattern "device$" | Measure-Object
 if ($devices.Count -eq 0) {
-    Write-Host "ERREUR: Aucun appareil Android connecte" -ForegroundColor Red
+    Write-Host "ATTENTION: Aucun appareil Android connecte" -ForegroundColor Yellow
     Write-Host "Demarrez un emulateur ou connectez un appareil physique" -ForegroundColor Yellow
-    exit 1
+    Write-Host "Le script attendra la connexion..." -ForegroundColor Cyan
+    Write-Host ""
+    
+    # Attendre qu'un appareil se connecte
+    $maxWait = 60 # 60 secondes max
+    $waited = 0
+    while ($waited -lt $maxWait) {
+        Start-Sleep -Seconds 2
+        $waited += 2
+        $devices = adb devices | Select-String -Pattern "device$" | Measure-Object
+        if ($devices.Count -gt 0) {
+            Write-Host "Appareil detecte !" -ForegroundColor Green
+            break
+        }
+        Write-Host "Attente de la connexion d'un appareil... ($waited/$maxWait secondes)" -ForegroundColor Gray
+    }
+    
+    if ($devices.Count -eq 0) {
+        Write-Host "ERREUR: Aucun appareil n'a ete connecte dans les delais" -ForegroundColor Red
+        exit 1
+    }
 }
-Write-Host "   ✓ Appareil Android detecte" -ForegroundColor Green
+Write-Host "   Appareil Android detecte" -ForegroundColor Green
 Write-Host ""
 
 # Configuration complete si demande
@@ -48,9 +68,9 @@ if (-not (Test-Path $autolinkingFile)) {
     Write-Host "   Generation du fichier autolinking.json avec TOUTES les dependances..." -ForegroundColor Cyan
     New-Item -ItemType Directory -Force -Path $autolinkingDir | Out-Null
     npx react-native config --platform android | Out-File -FilePath $autolinkingFile -Encoding utf8
-    Write-Host "   ✓ Fichier autolinking.json genere" -ForegroundColor Green
+    Write-Host "   Fichier autolinking.json genere" -ForegroundColor Green
 } else {
-    Write-Host "   ✓ Fichier autolinking.json existe deja" -ForegroundColor Green
+    Write-Host "   Fichier autolinking.json existe deja" -ForegroundColor Green
 }
 Write-Host ""
 
@@ -73,10 +93,10 @@ adb logcat | Select-String -Pattern "com\.flymap"
 '@
 
 $logcatFile = "$env:TEMP\flymap-logcat.ps1"
-Set-Content -Path $logcatFile -Value $logcatScriptContent
+Set-Content -Path $logcatFile -Value $logcatScriptContent -Encoding utf8
 
 Start-Process powershell -ArgumentList "-NoExit", "-File", "`"$logcatFile`""
-Write-Host "   ✓ Fenetre de logs ADB ouverte" -ForegroundColor Green
+Write-Host "   Fenetre de logs ADB ouverte" -ForegroundColor Green
 Write-Host ""
 
 # Attendre un peu pour que la fenetre se lance
