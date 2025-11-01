@@ -1,5 +1,11 @@
 {
   "name": "FlyMap",
-  "displayName": "FlyMap"
+  "displayName": "FlyMap",
+  "android": {
+    "package": "com.flymap"
+  },
+  "ios": {
+    "bundleIdentifier": "com.flymap.app"
+  }
 }
 
