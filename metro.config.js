@@ -1,14 +1,12 @@
 const { getDefaultConfig, mergeConfig } = require('@react-native/metro-config');
-const { transformer, resolver } = require('react-native-svg-transformer');
+const { transform } = require('react-native-svg-transformer');
 
 const defaultConfig = getDefaultConfig(__dirname);
 const { assetExts, sourceExts } = defaultConfig.resolver;
 
 const config = {
   transformer: {
-    // Utiliser le transformer react-native-svg-transformer qui delegue
-    // automatiquement au transformer Babel par defaut pour les fichiers .js
-    ...transformer,
+    transform,
     getTransformOptions: async () => ({
       transform: {
         experimentalImportSupport: false,
@@ -17,7 +15,6 @@ const config = {
     }),
   },
   resolver: {
-    ...resolver,
     assetExts: assetExts.filter(ext => ext !== 'svg'),
     sourceExts: [...sourceExts, 'svg'],
   },

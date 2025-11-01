@@ -1,16 +1,6 @@
 module.exports = function (api) {
   api.cache(true);
   
-  // Plugin Flow qui DOIT etre applique en PREMIER pour transformer component(
-  const flowSyntaxPlugin = require('@babel/plugin-syntax-flow');
-  const flowStripPlugin = [
-    require('@babel/plugin-transform-flow-strip-types'),
-    {
-      allowDeclareFields: true,
-      requireDirective: false,
-    },
-  ];
-  
   return {
     presets: [
       [
@@ -20,22 +10,7 @@ module.exports = function (api) {
         },
       ],
     ],
-    overrides: [
-      {
-        // CRITIQUE: Override pour react-native qui DOIT etre en PREMIER
-        // pour transformer component( AVANT toute autre transformation
-        test: /node_modules[\/\\]react-native[\/\\].*\.js$/,
-        plugins: [
-          // L'ordre est CRITIQUE: syntax-flow doit etre AVANT transform-flow-strip-types
-          flowSyntaxPlugin,
-          flowStripPlugin,
-        ],
-      },
-    ],
     plugins: [
-      // Plugin Flow global pour tous les autres fichiers aussi
-      flowSyntaxPlugin,
-      flowStripPlugin,
       [
         'module-resolver',
         {
