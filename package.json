@@ -6,6 +6,8 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
+    "start:reset": "react-native start --reset-cache",
+    "start:network": "react-native start --reset-cache --host 192.168.1.30",
     "test": "jest",
     "lint": "eslint ."
   },
