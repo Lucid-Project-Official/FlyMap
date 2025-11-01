@@ -1,10 +1,35 @@
-import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
-import {
-  appleAuth,
-  AppleButton,
-} from '@invertase/react-native-apple-authentication';
-import firestore from '@react-native-firebase/firestore';
+// Imports avec gestion d'erreur pour éviter les crashes au chargement
+let auth: any;
+let GoogleSignin: any;
+let appleAuth: any;
+let firestore: any;
+let FirebaseAuthTypes: any;
+
+try {
+  auth = require('@react-native-firebase/auth').default;
+  FirebaseAuthTypes = require('@react-native-firebase/auth').FirebaseAuthTypes;
+} catch (e) {
+  console.warn('[AuthService] Firebase Auth non disponible');
+}
+
+try {
+  GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
+} catch (e) {
+  console.warn('[AuthService] Google Sign-In non disponible');
+}
+
+try {
+  appleAuth = require('@invertase/react-native-apple-authentication').appleAuth;
+} catch (e) {
+  console.warn('[AuthService] Apple Auth non disponible');
+}
+
+try {
+  firestore = require('@react-native-firebase/firestore').default;
+} catch (e) {
+  console.warn('[AuthService] Firestore non disponible');
+}
+
 import { User } from '../types';
 
 // Configuration Google Sign-In - sera configuré dynamiquement dans initialize()
@@ -18,12 +43,16 @@ export class AuthService {
       console.log('[AuthService] Début de l\'initialisation...');
       
       // Vérifie si Firebase Auth est disponible
-      try {
-        const authInstance = auth();
-        console.log('[AuthService] Firebase Auth disponible');
-      } catch (firebaseError) {
-        console.warn('[AuthService] Firebase Auth non disponible:', firebaseError);
-        // Continue même si Firebase n'est pas configuré
+      if (auth) {
+        try {
+          const authInstance = auth();
+          console.log('[AuthService] Firebase Auth disponible');
+        } catch (firebaseError) {
+          console.warn('[AuthService] Firebase Auth non disponible:', firebaseError);
+          // Continue même si Firebase n'est pas configuré
+        }
+      } else {
+        console.warn('[AuthService] Firebase Auth non installé ou non disponible');
       }
 
       // Google Sign-In sera configuré dynamiquement lors de la connexion
@@ -42,6 +71,10 @@ export class AuthService {
    * Connexion avec Google
    */
   static async signInWithGoogle(): Promise<User> {
+    if (!auth || !GoogleSignin) {
+      throw new Error('Firebase Auth ou Google Sign-In non disponible. Vérifiez votre configuration.');
+    }
+    
     try {
       // Vérifie si Google Play Services est disponible
       await GoogleSignin.hasPlayServices({ showPlayServicesUpdateDialog: true });
@@ -77,6 +110,10 @@ export class AuthService {
    * Connexion avec Apple
    */
   static async signInWithApple(): Promise<User> {
+    if (!auth || !appleAuth) {
+      throw new Error('Firebase Auth ou Apple Auth non disponible. Vérifiez votre configuration.');
+    }
+    
     try {
       // Lance le flux Apple
       const appleAuthRequestResponse = await appleAuth.performRequest({
@@ -111,9 +148,22 @@ export class AuthService {
    * Crée ou met à jour un utilisateur dans Firestore
    */
   private static async createOrUpdateUser(
-    firebaseUser: FirebaseAuthTypes.User,
+    firebaseUser: any,
     appleData?: any
   ): Promise<User> {
+    if (!firestore) {
+      console.warn('[AuthService] Firestore non disponible, skip création utilisateur');
+      return {
+        id: firebaseUser.uid,
+        email: firebaseUser.email || '',
+        displayName: firebaseUser.displayName || 'Utilisateur',
+        photoURL: firebaseUser.photoURL || undefined,
+        provider: appleData ? 'apple' : 'google',
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      } as User;
+    }
+    
     const userRef = firestore().collection('users').doc(firebaseUser.uid);
     const doc = await userRef.get();
 
@@ -144,8 +194,12 @@ export class AuthService {
    */
   static async signOut(): Promise<void> {
     try {
-      await auth().signOut();
-      await GoogleSignin.signOut();
+      if (auth) {
+        await auth().signOut();
+      }
+      if (GoogleSignin) {
+        await GoogleSignin.signOut();
+      }
     } catch (error) {
       console.error('Sign out error:', error);
       throw error;
@@ -155,8 +209,11 @@ export class AuthService {
   /**
    * Obtient l'utilisateur actuellement connecté
    */
-  static getCurrentUser(): FirebaseAuthTypes.User | null {
+  static getCurrentUser(): any | null {
     try {
+      if (!auth) {
+        return null;
+      }
       return auth().currentUser;
     } catch (error) {
       console.warn('[AuthService] Erreur lors de la récupération de l\'utilisateur actuel:', error);
@@ -168,13 +225,19 @@ export class AuthService {
    * Écoute les changements d'état d'authentification
    */
   static onAuthStateChanged(
-    callback: (user: FirebaseAuthTypes.User | null) => void
+    callback: (user: any | null) => void
   ): () => void {
     try {
+      if (!auth) {
+        console.warn('[AuthService] Firebase Auth non disponible, callback immédiat avec null');
+        callback(null);
+        return () => {};
+      }
       return auth().onAuthStateChanged(callback);
     } catch (error) {
       console.error('[AuthService] Erreur lors de l\'abonnement à onAuthStateChanged:', error);
       // Retourne une fonction de désabonnement vide en cas d'erreur
+      callback(null);
       return () => {};
     }
   }

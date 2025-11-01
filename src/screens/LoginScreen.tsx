@@ -10,7 +10,15 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthService } from '../services/auth';
-import { appleAuth } from '@invertase/react-native-apple-authentication';
+
+// Import Apple Auth avec gestion d'erreur
+let appleAuth: any;
+try {
+  appleAuth = require('@invertase/react-native-apple-authentication').appleAuth;
+} catch (e) {
+  console.warn('[LoginScreen] Apple Auth non disponible');
+  appleAuth = { isSupported: () => false };
+}
 
 export default function LoginScreen() {
   console.log('[LoginScreen] Composant rendu');
