@@ -1,15 +1,8 @@
 module.exports = function (api) {
-  api.cache(true);
+  api.cache(false);
   
   return {
-    presets: [
-      [
-        'module:metro-react-native-babel-preset',
-        {
-          unstable_allowRequireContext: true,
-        },
-      ],
-    ],
+    presets: ['module:metro-react-native-babel-preset'],
   };
 };
 
