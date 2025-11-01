@@ -4,15 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { StatusBar, View, ActivityIndicator, Text, ScrollView } from 'react-native';
 
-// Imports avec gestion d'erreur pour éviter les crashes
-let Icon: any;
-try {
-  Icon = require('react-native-vector-icons/MaterialIcons').default;
-} catch (e) {
-  console.warn('[App] react-native-vector-icons non disponible, utilisation d\'un fallback');
-  Icon = ({ name, size, color, style }: any) => <View style={[{ width: size, height: size, backgroundColor: color }, style]} />;
-}
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthService } from './src/services/auth';
 
 // Console.log pour débogage
@@ -66,55 +58,13 @@ class ErrorBoundary extends Component<
   }
 }
 
-// Screens avec gestion d'erreur pour éviter les crashes si un screen a un problème
-let LoginScreen: any;
-let MapScreen: any;
-let SearchScreen: any;
-let AddSpotScreen: any;
-let ProfileScreen: any;
-let SpotDetailScreen: any;
-
-try {
-  LoginScreen = require('./src/screens/LoginScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de LoginScreen:', e);
-  LoginScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
-
-try {
-  MapScreen = require('./src/screens/MapScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de MapScreen:', e);
-  MapScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
-
-try {
-  SearchScreen = require('./src/screens/SearchScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de SearchScreen:', e);
-  SearchScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
-
-try {
-  AddSpotScreen = require('./src/screens/AddSpotScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de AddSpotScreen:', e);
-  AddSpotScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
-
-try {
-  ProfileScreen = require('./src/screens/ProfileScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de ProfileScreen:', e);
-  ProfileScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
-
-try {
-  SpotDetailScreen = require('./src/screens/SpotDetailScreen').default;
-} catch (e) {
-  console.error('[App] Erreur lors du chargement de SpotDetailScreen:', e);
-  SpotDetailScreen = () => <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}><Text>Erreur de chargement</Text></View>;
-}
+// Screens - Import normal pour éviter les problèmes de chargement
+import LoginScreen from './src/screens/LoginScreen';
+import MapScreen from './src/screens/MapScreen';
+import SearchScreen from './src/screens/SearchScreen';
+import AddSpotScreen from './src/screens/AddSpotScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
+import SpotDetailScreen from './src/screens/SpotDetailScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();

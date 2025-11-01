@@ -8,24 +8,9 @@ import {
   ActivityIndicator,
   Platform,
 } from 'react-native';
-// Import avec gestion d'erreur
-let Icon: any;
-try {
-  Icon = require('react-native-vector-icons/MaterialIcons').default;
-} catch (e) {
-  Icon = ({ name, size, color, style }: any) => <View style={[{ width: size, height: size }, style]} />;
-}
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthService } from '../services/auth';
-
-// Import Apple Auth avec gestion d'erreur
-let appleAuth: any;
-try {
-  appleAuth = require('@invertase/react-native-apple-authentication').appleAuth;
-} catch (e) {
-  console.warn('[LoginScreen] Apple Auth non disponible');
-  appleAuth = { isSupported: () => false, performRequest: () => Promise.reject('Not available') };
-}
+import { appleAuth } from '@invertase/react-native-apple-authentication';
 
 export default function LoginScreen() {
   console.log('[LoginScreen] Composant rendu');
@@ -46,9 +31,9 @@ export default function LoginScreen() {
   const handleAppleSignIn = async () => {
     setLoading(true);
     try {
-      const isAppleAvailable = appleAuth.isSupported();
-      if (!isAppleAvailable) {
-        Alert.alert('Non disponible', 'Apple Sign-In n\'est pas disponible sur cet appareil');
+      // Apple Sign-In n'est disponible que sur iOS
+      if (Platform.OS !== 'ios') {
+        Alert.alert('Non disponible', 'Apple Sign-In n\'est disponible que sur iOS');
         setLoading(false);
         return;
       }
