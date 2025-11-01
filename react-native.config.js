@@ -3,9 +3,6 @@ module.exports = {
     android: {
       packageName: 'com.flymap',
     },
-    ios: {
-      bundleIdentifier: 'com.flymap.app',
-    },
   },
 };
 
