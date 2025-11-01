@@ -1,0 +1,166 @@
+﻿
+11-01 14:25:07.777  1608  1781 I SatelliteAppTracker: onPackageUpdateFinished : com.flymap
+11-01 14:25:07.777  1608  1781 I SatelliteAppTracker: onPackageModified : com.flymap
+11-01 14:25:07.777  1608  1781 E SatelliteAppTracker: packageName: com.flymap, value: null
+11-01 14:25:07.780  1685  2493 I WellbeingModel: updateActionsWithRetry(); retryCount: 0, package: com.flymap
+11-01 14:25:07.780  1685  2493 D WellbeingModel: retrieveActions() called with: packageNames = [com.flymap]
+11-01 14:25:07.795  1608  1781 E SatelliteAppTracker: packageName: com.flymap, value: null
+11-01 14:25:07.798   809  1348 D ShortcutService: replacing package: com.flymap userId=0
+11-01 14:25:07.813   809  1358 I SdkSandboxManager: No SDKs used. Skipping SDK data reconcilation for CallingInfo{mUid=10219, mPackageName='com.flymap, mAppProcessToken='null'}
+11-01 14:25:07.873  1685  1685 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.874  5055  5055 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.877  6750  6750 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.877  6911  6911 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.879  2108  2108 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.882  2119  2119 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.883  7078  7078 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.883  1405  1405 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.884  9095  9095 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.885  1527  1527 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.885  1595  1595 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.886  2197  2197 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.886  4746  4746 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.887  4360  4360 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.890  2136  2136 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.890  7974  7974 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.904  1685  1685 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.911  7078  7078 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.911  6750  6750 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.911  2108  2108 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.912  2119  2119 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.913  4360  4360 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.914  5055  5055 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.914  2136  2136 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.917  6911  6911 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.920  9095  9095 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.922  7974  7974 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.923  1527  1527 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.925  1595  1595 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.926  2136 14986 I AiAiEcho: AppIndexer Package:[com.flymap] UserProfile:[0] Enabled:[true].
+11-01 14:25:07.926  2136 14986 I AiAiEcho: AppFetcherImplV2 updateApps package:[com.flymap], userId:[0], reason:[package is updated.].
+11-01 14:25:07.926   809  1358 I SdkSandboxManager: No SDKs used. Skipping SDK data reconcilation for CallingInfo{mUid=10219, mPackageName='com.flymap, mAppProcessToken='null'}
+11-01 14:25:07.926  4746  4746 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.926  2197  2197 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.943  1405  1405 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:07.981   809   991 W PackageConfigPersister: App-specific configuration not found for packageName: com.flymap and userId: 0
+11-01 14:25:08.063   809   809 I Telecom : CarModeTracker: Package com.flymap is not tracked.: SSH.oR@A5U
+11-01 14:25:08.131  4612  4612 I SafetyLabelChangedBroadcastReceiver: received broadcast packageName: com.flymap, current user: UserHandle{0}, packageChangeEvent: UPDATE, intent user: UserHandle{0}
+11-01 14:25:08.139  4612  4612 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.141  4612  4612 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.198  5599  5599 I Finsky:background: [2] IQ: onPackageRemoved com.flymap, replacing=true, uninstallingFromPlay=false
+11-01 14:25:08.218  1608  1608 D CarrierSvcBindHelper: onPackageUpdateFinished: com.flymap
+11-01 14:25:08.219  1608  1608 D CarrierSvcBindHelper: onPackageModified: com.flymap
+11-01 14:25:08.256   809   809 D AS.AudioService: received android.intent.action.PACKAGE_ADDED replacing: true archival: false for package com.flymap with uid 10219
+11-01 14:25:08.378  5599  5599 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.379  5599  5599 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.406  6762  6762 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.412  6762  6762 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.458   809   809 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.473  1608  1951 D ImsResolver: maybeAddedImsService, packageName: com.flymap
+11-01 14:25:08.473  1608  1951 V ImsResolver: searchForImsServices: package=com.flymap, users=[UserHandle{0}]
+11-01 14:25:08.482  1608  1951 V ImsResolver: searchForImsServices: package=com.flymap, users=[UserHandle{0}]
+11-01 14:25:08.493  1608  1608 W VvmPkgInstalledRcvr: carrierVvmPkgAdded: carrier vvm packages doesn't contain com.flymap
+11-01 14:25:08.493  1608  1608 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.542  1608  1608 D SatelliteController: packageStateChanged: package:com.flymap defaultSmsPackageName: com.google.android.apps.messaging satelliteGatewayServicePackageName: 
+11-01 14:25:08.542  1608  1608 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.547   809   809 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.547   809   809 D AS.AudioService: received android.intent.action.PACKAGE_REPLACED replacing: true archival: false for package com.flymap with uid 10219
+11-01 14:25:08.569  6750 14922 I ProximityAuth: [RecentAppsMediator] Package added: (user=UserHandle{0}) com.flymap
+11-01 14:25:08.578   809   809 W AlarmManager: Package com.flymap, uid 10219 lost permission to set exact alarms!
+11-01 14:25:08.986  6968  6968 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:08.995  6968  6968 D ActivityThread: Package [com.flymap] reported as REPLACED, but missing application info. Assuming REMOVED.
+11-01 14:25:09.111  6762 15054 W SQLiteLog: (28) double-quoted string literal: "com.flymap"
+11-01 14:25:09.407   809  2274 V WindowManager: DesktopModeLaunchParamsModifier: phase= 0 task=null activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity display-area-from-current-params=null 
+display-area-from-default-fallback=DefaultTaskDisplayArea@9082256 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256 task null, skipping
+11-01 14:25:09.408   809  2274 V WindowManager: TaskLaunchParamsModifier:phase=0 task=null activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity t-1} display-area-from-current-params=null 
+display-area-from-default-fallback=DefaultTaskDisplayArea@9082256 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256
+11-01 14:25:09.410   809  2274 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=null activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity t-1} display-area-from-current-params=null 
+display-area-from-default-fallback=DefaultTaskDisplayArea@9082256 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256 task null, skipping
+11-01 14:25:09.410   809  2274 V WindowManager: TaskLaunchParamsModifier:phase=3 task=null activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity t-1} display-area-from-current-params=null 
+display-area-from-default-fallback=DefaultTaskDisplayArea@9082256 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256 non-freeform-task-display-area 
+display-area=DefaultTaskDisplayArea@9082256 skip-bounds-fullscreen
+11-01 14:25:09.427   809  2274 V WindowManager: DesktopModeLaunchParamsModifier: phase= 3 task=Task{13ec3f6 #50 type=standard A=10219:com.flymap} activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity 
+t-1} display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256 not entering desktop mode, skipping
+11-01 14:25:09.429   809  2274 V WindowManager: TaskLaunchParamsModifier:phase=3 task=Task{13ec3f6 #50 type=standard A=10219:com.flymap} activity=ActivityRecord{149145745 u0 com.flymap/.MainActivity t-1} 
+display-from-task=0 display-id=0 task-display-area-windowing-mode=1 suggested-display-area=DefaultTaskDisplayArea@9082256 inherit-from-task=fullscreen non-freeform-task-display-area 
+display-area=DefaultTaskDisplayArea@9082256 skip-bounds-fullscreen
+11-01 14:25:09.453   809  2274 I ActivityTaskManager: START u0 {act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 xflg=0x4 cmp=com.flymap/.MainActivity} with 
+LAUNCH_SINGLE_TASK from uid 2000 (com.android.shell) (BAL_ALLOW_PERMISSION) result code=0
+11-01 14:25:09.462  1405  1483 V WindowManagerShell: Transition requested (#114): android.os.BinderProxy@6ca3794 TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=50 
+effectiveUid=10219 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.flymap/.MainActivity } 
+baseActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} topActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} origActivity=null realActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} 
+numActivities=1 lastActiveTime=5285327 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@180f23d} topActivityType=1 
+pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{5e3ea32 
+com.flymap.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false isSleeping=false locusId=null 
+displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 
+topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true 
+isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 
+topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false 
+isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=inactive0} 
+topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, 
+windowingLayerChange = null, flags = 0, debugId = 114 }
+11-01 14:25:09.487   809   853 I ActivityManager: Start proc 15064:com.flymap/u0a219 for next-top-activity {com.flymap/com.flymap.MainActivity}
+11-01 14:25:09.537 15064 15064 I Zygote  : Process 15064 created for com.flymap
+11-01 14:25:09.538 15064 15064 I com.flymap: Late-enabling -Xcheck:jni
+11-01 14:25:09.689   809  2274 D CoreBackPreview: Window{5420aef u0 Splash Screen com.flymap}: Setting back callback 
+OnBackInvokedCallbackInfo{mCallback=android.window.IOnBackInvokedCallback$Stub$Proxy@a64f732, mPriority=0, mIsAnimationCallback=false, mOverrideBehavior=0}
+11-01 14:25:09.789   809   841 V WindowManager: Sent Transition (#114) createdAt=11-01 14:25:09.405 via request=TransitionRequestInfo { type = OPEN, triggerTask = TaskInfo{userId=0 taskId=50 effectiveUid=10219 
+displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.flymap/.MainActivity } 
+baseActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} topActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} origActivity=null realActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} 
+numActivities=1 lastActiveTime=5285327 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{f1ca49e Task{13ec3f6 #50 type=standard 
+A=10219:com.flymap}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) 
+topActivityInfo=ActivityInfo{98e6b7f com.flymap.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=false isVisible=false isVisibleRequested=false isTopActivityNoDisplay=false 
+isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 
+requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false 
+isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false 
+topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) 
+isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { 
+cameraCompatMode=inactive0} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = 
+null, userChange = null, windowingLayerChange = null, flags = 0, debugId = 114 }
+11-01 14:25:09.789   809   841 V WindowManager:         {WCT{RemoteToken{f1ca49e Task{13ec3f6 #50 type=standard A=10219:com.flymap}}} m=OPEN f=NONE leash=Surface(name=Task=50#1063)/@0x1f11920 sb=Rect(0, 0 - 
+1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-01 14:25:09.805 15064 15064 I com.flymap: Using CollectorTypeCMC GC.
+11-01 14:25:09.808 15064 15064 W com.flymap: Unexpected CPU variant for x86: x86_64.
+11-01 14:25:09.808 15064 15064 W com.flymap: Known variants: atom, sandybridge, silvermont, goldmont, goldmont-plus, goldmont-without-sha-xsaves, tremont, kabylake, alderlake, default
+11-01 14:25:10.533  1685  2493 D WellbeingModel: ....actionId: pause, packages: com.flymap
+11-01 14:25:10.548 15064 15064 D nativeloader: Configuring clns-9 for other apk /data/app/~~-T49Qo4tHIPU5FVYI6Wb3A==/com.flymap-xmNYWxr9SZABsj2Hnb8HSA==/base.apk. target_sdk_version=35, uses_libraries=, 
+library_path=/data/app/~~-T49Qo4tHIPU5FVYI6Wb3A==/com.flymap-xmNYWxr9SZABsj2Hnb8HSA==/lib/x86_64:/data/app/~~-T49Qo4tHIPU5FVYI6Wb3A==/com.flymap-xmNYWxr9SZABsj2Hnb8HSA==/base.apk!/lib/x86_64, 
+permitted_path=/data:/mnt/expand:/data/user/0/com.flymap
+11-01 14:25:10.608 15064 15064 V GraphicsEnvironment: com.flymap is not listed in per-application setting
+11-01 14:25:11.599 15064 15064 D nativeloader: Load libreact_featureflagsjni.so using class loader ns clns-9 (caller=/data/app/~~-T49Qo4tHIPU5FVYI6Wb3A==/com.flymap-xmNYWxr9SZABsj2Hnb8HSA==/base.apk): dlopen 
+failed: library "libreact_featureflagsjni.so" not found
+11-01 14:25:11.607 15064 15064 E AndroidRuntime: Process: com.flymap, PID: 15064
+11-01 14:25:11.620   809  1850 W ActivityTaskManager:   Force finishing activity com.flymap/.MainActivity
+11-01 14:25:11.625  1405  1483 V WindowManagerShell: Transition requested (#115): android.os.BinderProxy@a11d51 TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=50 
+effectiveUid=10219 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.flymap/.MainActivity } 
+baseActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} topActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} origActivity=null realActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} 
+numActivities=1 lastActiveTime=5287104 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{android.os.BinderProxy@180f23d} topActivityType=1 
+pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) topActivityInfo=ActivityInfo{92e59b6 
+com.flymap.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false isSleeping=false locusId=null 
+displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 requestedVisibleTypes=503 
+topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false isLetterboxEducationEnabled= true 
+isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false topActivityLetterboxVerticalPosition= -1 
+topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) isUserFullscreenOverrideEnabled=false 
+isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { cameraCompatMode=inactive0} 
+topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = null, userChange = null, 
+windowingLayerChange = null, flags = 16, debugId = 115 }
+11-01 14:25:11.688   809  1850 I ActivityManager: Process com.flymap (pid 15064) has died: fg  TOP 
+11-01 14:25:11.789   809   841 V WindowManager: Sent Transition (#115) createdAt=11-01 14:25:11.620 via request=TransitionRequestInfo { type = CLOSE, triggerTask = TaskInfo{userId=0 taskId=50 
+effectiveUid=10219 displayId=0 isRunning=true baseIntent=Intent { act=android.intent.action.MAIN cat=[android.intent.category.LAUNCHER] flg=0x10000000 cmp=com.flymap/.MainActivity } 
+baseActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} topActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} origActivity=null realActivity=ComponentInfo{com.flymap/com.flymap.MainActivity} 
+numActivities=1 lastActiveTime=5287104 supportsMultiWindow=true resizeMode=1 isResizeable=true minWidth=-1 minHeight=-1 defaultMinSize=220 token=WCT{RemoteToken{f1ca49e Task{13ec3f6 #50 type=standard 
+A=10219:com.flymap}}} topActivityType=1 pictureInPictureParams=null shouldDockBigOverlays=false launchIntoPipHostTaskId=-1 lastParentTaskIdBeforePip=-1 displayCutoutSafeInsets=Rect(0, 0 - 0, 0) 
+topActivityInfo=ActivityInfo{98e6b7f com.flymap.MainActivity} launchCookies=[] positionInParent=Point(0, 0) parentTaskId=-1 isFocused=true isVisible=true isVisibleRequested=true isTopActivityNoDisplay=false 
+isSleeping=false locusId=null displayAreaFeatureId=1 isTopActivityTransparent=false isActivityStackTransparent=false lastNonFullscreenBounds=null capturedLink=null capturedLinkTimestamp=0 
+requestedVisibleTypes=503 topActivityRequestOpenInBrowserEducationTimestamp=0 appCompatTaskInfo=AppCompatTaskInfo { topActivityInSizeCompat=false isLeafTask= true eligibleForLetterboxEducation= false 
+isLetterboxEducationEnabled= true isLetterboxDoubleTapEnabled= false eligibleForUserAspectRatioButton= false topActivityBoundsLetterboxed= false isFromLetterboxDoubleTap= false 
+topActivityLetterboxVerticalPosition= -1 topActivityLetterboxHorizontalPosition= -1 topActivityLetterboxWidth=-1 topActivityLetterboxHeight=-1 topActivityAppBounds=Rect(0, 0 - 1080, 2400) 
+isUserFullscreenOverrideEnabled=false isSystemFullscreenOverrideEnabled=false hasMinAspectRatioOverride=false topActivityLetterboxBounds=null cameraCompatTaskInfo=CameraCompatTaskInfo { 
+cameraCompatMode=inactive0} topNonResizableActivityAspectRatio=-1.0} topActivityMainWindowFrame=null isAppBubble=false}, pipChange = null, remoteTransition = null, displayChange = null, requestedLocation = 
+null, userChange = null, windowingLayerChange = null, flags = 16, debugId = 115 }
+11-01 14:25:11.789   809   841 V WindowManager:         {WCT{RemoteToken{f1ca49e Task{13ec3f6 #50 type=standard A=10219:com.flymap}}} m=CLOSE f=NONE leash=Surface(name=Task=50#1063)/@0x1f11920 sb=Rect(0, 0 - 
+1080, 2400) eb=Rect(0, 0 - 1080, 2400) epz=Point(1080, 2400) d=0 taskParent=-1 winMode=1 userId=0},
+11-01 14:25:11.832   809   936 D CoreBackPreview: Window{5420aef u0 Splash Screen com.flymap EXITING}: Setting back callback null
+11-01 14:25:12.132   809   845 W ActivityTaskManager: Activity top resumed state loss timeout for ActivityRecord{149145745 u0 com.flymap/.MainActivity t50 f} isExiting}
+
+

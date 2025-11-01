@@ -85,6 +85,55 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
         versionName "1.0"
+        
+        // Forcer l'inclusion de toutes les bibliotheques natives
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
+    }
+    
+    // Configuration du packaging pour inclure toutes les bibliotheques natives
+    packaging {
+        jniLibs {
+            // Inclure toutes les bibliotheques natives necessaires
+            // Resoudre les conflits en prenant la premiere occurrence
+            pickFirsts += [
+                '**/libc++_shared.so',
+                '**/libfbjni.so',
+                '**/libhermes.so',
+                '**/libhermestooling.so',
+                '**/libreact_featureflagsjni.so',
+                '**/libreactnativejni.so',
+                '**/libreact_nativemodule_core.so',
+                '**/libreactnativeblob.so',
+                '**/libjscexecutor.so',
+                '**/libjsc.so'
+            ]
+            // S'assurer que toutes les architectures sont incluses
+            // Ne pas exclure de bibliotheques - IMPORTANT: inclure libreact_featureflagsjni.so
+            excludes = []
+            // Forcer l'inclusion de toutes les bibliotheques natives du AAR react-android
+            keepDebugSymbols += [
+                '**/*.so'
+            ]
+        }
+        // S'assurer que tous les fichiers sont inclus
+        resources {
+            excludes += []
+        }
+    }
+    
+    // Forcer l'extraction des bibliotheques natives des AAR
+    buildFeatures {
+        prefab = true
+    }
+    
+    // S'assurer que toutes les bibliotheques natives sont compilees
+    splits {
+        abi {
+            reset()
+            enable false
+        }
     }
     signingConfigs {
         debug {
@@ -114,6 +163,7 @@ android {
 
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
+    // Les bibliotheques natives sont automatiquement extraites du AAR
     implementation("com.facebook.react:react-android")
 
     if (hermesEnabled.toBoolean()) {
