@@ -6,9 +6,9 @@ import {
   TouchableOpacity,
   Alert,
   ActivityIndicator,
-  Image,
   Platform,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import { AuthService } from '../services/auth';
 import { appleAuth } from '@invertase/react-native-apple-authentication';
 
@@ -49,11 +49,9 @@ export default function LoginScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.logoContainer}>
-        <Image
-          source={require('../../assets/logo.png')}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <View style={styles.logoPlaceholder}>
+          <Text style={styles.logoText}>🚁</Text>
+        </View>
         <Text style={styles.title}>FlyMap</Text>
         <Text style={styles.subtitle}>Vos meilleurs spots de vol</Text>
       </View>
@@ -63,10 +61,7 @@ export default function LoginScreen() {
           style={[styles.button, styles.googleButton]}
           onPress={handleGoogleSignIn}
           disabled={loading}>
-          <Image
-            source={require('../../assets/google-logo.png')}
-            style={styles.buttonIcon}
-          />
+          <Icon name="language" size={24} color="#4285F4" />
           <Text style={styles.buttonText}>Continuer avec Google</Text>
         </TouchableOpacity>
 
@@ -75,10 +70,7 @@ export default function LoginScreen() {
             style={[styles.button, styles.appleButton]}
             onPress={handleAppleSignIn}
             disabled={loading}>
-            <Image
-              source={require('../../assets/apple-logo.png')}
-              style={styles.buttonIcon}
-            />
+            <Icon name="apple" size={24} color="#fff" />
             <Text style={[styles.buttonText, styles.appleButtonText]}>
               Continuer avec Apple
             </Text>
@@ -108,10 +100,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 60,
   },
-  logo: {
+  logoPlaceholder: {
     width: 120,
     height: 120,
+    backgroundColor: '#007AFF',
+    borderRadius: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
     marginBottom: 20,
+  },
+  logoText: {
+    fontSize: 60,
   },
   title: {
     fontSize: 36,

@@ -58,19 +58,27 @@ npm run ios      # Pour iOS (Mac uniquement)
 
 ## 📚 Documentation
 
-### Guide d'Intégration
+### Guides Disponibles
 
-👉 **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - **Guide complet de A à Z**
+👉 **[GUIDE_DEPLOIEMENT.md](GUIDE_DEPLOIEMENT.md)** - **🚨 COMMENCEZ ICI - Guide de déploiement**
 
-Ce guide unique vous explique étape par étape :
-- ✅ Installation des outils
+**Guide pour faire fonctionner l'application** - Corrige les problèmes de crash au démarrage :
+- ✅ Configuration des permissions Android
+- ✅ Configuration Google Maps
+- ✅ Correction des images manquantes
+- ✅ Configuration des icônes
+- ✅ Setup complet étape par étape
+
+👉 **[GUIDE_INTEGRATION.md](GUIDE_INTEGRATION.md)** - **Guide d'intégration Firebase**
+
+Guide complémentaire pour :
 - ✅ Configuration Firebase complète (Auth, Firestore, Storage)
 - ✅ Génération des dossiers natifs (iOS/Android)
 - ✅ Configuration du projet
 - ✅ Lancement de l'application
 - ✅ Résolution de problèmes courants
 
-**Commencez par là !** 🚀
+**Commencez par GUIDE_DEPLOIEMENT.md !** 🚀
 
 ---
 
