@@ -1,3 +1,62 @@
 rootProject.name = 'FlyMap'
 include ':app'
 includeBuild('../node_modules/@react-native/gradle-plugin')
+
+// IMPORTANT: @react-native-firebase/app DOIT etre inclus en premier avec le bon nom
+include ':react-native-firebase_app'
+project(':react-native-firebase_app').projectDir = new File('../node_modules/@react-native-firebase/app/android')
+
+// Modules natifs autolinkes automatiquement - generes a partir de autolinking.json
+include ':_invertase_react_native_apple_authentication'
+project(':_invertase_react_native_apple_authentication').projectDir = new File('../node_modules/@invertase/react-native-apple-authentication/android')
+
+include ':_react_native_community_geolocation'
+project(':_react_native_community_geolocation').projectDir = new File('../node_modules/@react-native-community/geolocation/android')
+
+include ':_react_native_firebase_auth'
+project(':_react_native_firebase_auth').projectDir = new File('../node_modules/@react-native-firebase/auth/android')
+
+include ':_react_native_firebase_firestore'
+project(':_react_native_firebase_firestore').projectDir = new File('../node_modules/@react-native-firebase/firestore/android')
+
+include ':_react_native_firebase_storage'
+project(':_react_native_firebase_storage').projectDir = new File('../node_modules/@react-native-firebase/storage/android')
+
+include ':_react_native_google_signin_google_signin'
+project(':_react_native_google_signin_google_signin').projectDir = new File('../node_modules/@react-native-google-signin/google-signin/android')
+
+include ':_react_native_picker_picker'
+project(':_react_native_picker_picker').projectDir = new File('../node_modules/@react-native-picker/picker/android')
+
+include ':react_native_gesture_handler'
+project(':react_native_gesture_handler').projectDir = new File('../node_modules/react-native-gesture-handler/android')
+
+include ':react_native_image_picker'
+project(':react_native_image_picker').projectDir = new File('../node_modules/react-native-image-picker/android')
+
+include ':react_native_maps'
+project(':react_native_maps').projectDir = new File('../node_modules/react-native-maps/android')
+
+include ':react_native_permissions'
+project(':react_native_permissions').projectDir = new File('../node_modules/react-native-permissions/android')
+
+include ':react_native_safe_area_context'
+project(':react_native_safe_area_context').projectDir = new File('../node_modules/react-native-safe-area-context/android')
+
+include ':react_native_screens'
+project(':react_native_screens').projectDir = new File('../node_modules/react-native-screens/android')
+
+include ':react_native_vector_icons'
+project(':react_native_vector_icons').projectDir = new File('../node_modules/react-native-vector-icons/android')
+
+include ':react_native_webview'
+project(':react_native_webview').projectDir = new File('../node_modules/react-native-webview/android')
+
+include ':react_native_reanimated'
+project(':react_native_reanimated').projectDir = new File('../node_modules/react-native-reanimated/android')
+
+include ':react_native_svg'
+project(':react_native_svg').projectDir = new File('../node_modules/react-native-svg/android')
+
+include ':react_native_worklets'
+project(':react_native_worklets').projectDir = new File('../node_modules/react-native-worklets/android')

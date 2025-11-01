@@ -31,12 +31,13 @@ if (Test-Path ".gradle") {
     Remove-Item ".gradle" -Recurse -Force -ErrorAction SilentlyContinue
 }
 
-# S'assurer que autolinking.json existe
-if (-not (Test-Path "build\generated\autolinking")) {
-    New-Item -ItemType Directory -Force -Path "build\generated\autolinking" | Out-Null
+# Supprimer autolinking.json s'il existe - il sera régénéré automatiquement par Gradle
+if (Test-Path "build\generated\autolinking\autolinking.json") {
+    Remove-Item "build\generated\autolinking\autolinking.json" -Force -ErrorAction SilentlyContinue
 }
-if (-not (Test-Path "build\generated\autolinking\autolinking.json")) {
-    Set-Content -Path "build\generated\autolinking\autolinking.json" -Value "[]"
+# Supprimer le dossier autolinking pour forcer une régénération complète
+if (Test-Path "build\generated\autolinking") {
+    Remove-Item "build\generated\autolinking" -Recurse -Force -ErrorAction SilentlyContinue
 }
 
 # Nettoyer avec Gradle

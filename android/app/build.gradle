@@ -108,6 +108,10 @@ android {
     }
 }
 
+// Le plugin React Native devrait automatiquement linker tous les modules
+// mais pour garantir que TOUS les modules sont compilÃ©s, on s'assure que
+// le fichier autolinking.json est correctement genere
+
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
@@ -117,4 +121,27 @@ dependencies {
     } else {
         implementation jscFlavor
     }
+    
+    // Modules natifs autolinkes automatiquement
+    // IMPORTANT: @react-native-firebase/app DOIT etre inclus en premier
+    implementation project(':react-native-firebase_app')
+    implementation project(':_invertase_react_native_apple_authentication')
+    implementation project(':_react_native_community_geolocation')
+    implementation project(':_react_native_firebase_auth')
+    implementation project(':_react_native_firebase_firestore')
+    implementation project(':_react_native_firebase_storage')
+    implementation project(':_react_native_google_signin_google_signin')
+    implementation project(':_react_native_picker_picker')
+    implementation project(':react_native_gesture_handler')
+    implementation project(':react_native_image_picker')
+    implementation project(':react_native_maps')
+    implementation project(':react_native_permissions')
+    implementation project(':react_native_safe_area_context')
+    implementation project(':react_native_screens')
+    implementation project(':react_native_vector_icons')
+    implementation project(':react_native_webview')
+    implementation project(':react_native_reanimated')
+    implementation project(':react_native_svg')
+    implementation project(':react_native_worklets')
 }
+
