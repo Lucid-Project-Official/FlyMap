@@ -10,6 +10,7 @@ import {
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import Geolocation from '@react-native-community/geolocation';
 import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
+import { useFocusEffect } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import { FirestoreService } from '../services/firestore';
 import { Spot } from '../types';
@@ -20,22 +21,48 @@ export default function MapScreen({ navigation }: any) {
   
   const [spots, setSpots] = useState<Spot[]>([]);
   const [loading, setLoading] = useState(true);
+  const [currentLocation, setCurrentLocation] = useState<{ latitude: number; longitude: number } | null>(null);
   const [region, setRegion] = useState({
     latitude: 46.6034,
     longitude: 1.8883,
     latitudeDelta: 5.0,
     longitudeDelta: 5.0,
   });
+  const [watchId, setWatchId] = useState<number | null>(null);
 
   useEffect(() => {
     console.log('[MapScreen] useEffect déclenché');
     try {
-      loadSpots();
+      loadSpots(); // Chargement initial des spots
       requestLocationPermission();
     } catch (error) {
       console.error('[MapScreen] Erreur dans useEffect:', error);
     }
+
+    // Cleanup: arrêter le suivi de position quand le composant se démonte
+    return () => {
+      if (watchId !== null) {
+        Geolocation.clearWatch(watchId);
+      }
+    };
   }, []);
+
+  // Cleanup séparé pour watchId
+  useEffect(() => {
+    return () => {
+      if (watchId !== null) {
+        Geolocation.clearWatch(watchId);
+      }
+    };
+  }, [watchId]);
+
+  // Recharger les spots quand l'écran est mis au focus (après ajout d'un spot)
+  useFocusEffect(
+    React.useCallback(() => {
+      console.log('[MapScreen] Écran mis au focus, rechargement des spots');
+      loadSpots();
+    }, [])
+  );
 
   const requestLocationPermission = async () => {
     try {
@@ -49,6 +76,7 @@ export default function MapScreen({ navigation }: any) {
       console.log('[MapScreen] Résultat permission:', result);
       if (result === RESULTS.GRANTED) {
         getCurrentLocation();
+        startWatchingLocation();
       } else {
         console.warn('[MapScreen] Permission de localisation refusée:', result);
       }
@@ -63,6 +91,11 @@ export default function MapScreen({ navigation }: any) {
       Geolocation.getCurrentPosition(
         (position) => {
           console.log('[MapScreen] Position obtenue:', position.coords);
+          const newLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          setCurrentLocation(newLocation);
           setRegion({
             latitude: position.coords.latitude,
             longitude: position.coords.longitude,
@@ -72,12 +105,44 @@ export default function MapScreen({ navigation }: any) {
         },
         (error) => {
           console.error('[MapScreen] Erreur lors de l\'obtention de la position:', error);
-          // Continue avec la position par défaut
+          // Pour l'émulateur, utiliser une position de test si nécessaire
+          if (__DEV__ && Platform.OS === 'android') {
+            console.warn('[MapScreen] Mode émulateur détecté, utilisation de coordonnées par défaut');
+          }
         },
         { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
       );
     } catch (error) {
       console.error('[MapScreen] Erreur dans getCurrentLocation:', error);
+    }
+  };
+
+  const startWatchingLocation = () => {
+    try {
+      console.log('[MapScreen] Démarrage du suivi de position en temps réel');
+      const id = Geolocation.watchPosition(
+        (position) => {
+          console.log('[MapScreen] Position mise à jour:', position.coords);
+          const newLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+          };
+          setCurrentLocation(newLocation);
+          // Ne mettre à jour la région que si elle n'a pas été modifiée manuellement
+          // (on peut ajouter une logique pour détecter si l'utilisateur a zoomé/déplacé)
+        },
+        (error) => {
+          console.error('[MapScreen] Erreur lors du suivi de position:', error);
+        },
+        {
+          enableHighAccuracy: true,
+          distanceFilter: 10, // Mettre à jour seulement si l'utilisateur s'est déplacé de 10m
+          interval: 5000, // Mettre à jour toutes les 5 secondes
+        }
+      );
+      setWatchId(id);
+    } catch (error) {
+      console.error('[MapScreen] Erreur dans startWatchingLocation:', error);
     }
   };
 
@@ -119,6 +184,15 @@ export default function MapScreen({ navigation }: any) {
         style={styles.map}
         region={region}
         onRegionChangeComplete={setRegion}>
+        {/* Marker pour la position actuelle de l'utilisateur */}
+        {currentLocation && (
+          <Marker
+            coordinate={currentLocation}
+            title="Ma position"
+            pinColor="#007AFF"
+          />
+        )}
+        {/* Markers pour les spots */}
         {spots.map((spot) => (
           <Marker
             key={spot.id}

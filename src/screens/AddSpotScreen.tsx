@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -20,6 +20,7 @@ import { StorageService, MediaService } from '../services/storage';
 import { AuthService } from '../services/auth';
 import { SpotCategory } from '../types';
 import Geolocation from '@react-native-community/geolocation';
+import { request, PERMISSIONS, RESULTS } from 'react-native-permissions';
 
 const CATEGORIES: SpotCategory[] = ['Freestyle', 'Bando', 'Race', 'Cinematique', 'Autre'];
 
@@ -36,28 +37,68 @@ export default function AddSpotScreen() {
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
-  const [isDraggable, setIsDraggable] = useState(true);
+  const [spotLocation, setSpotLocation] = useState({
+    latitude: 46.6034,
+    longitude: 1.8883,
+  });
   const [loading, setLoading] = useState(false);
+  const [currentUserLocation, setCurrentUserLocation] = useState<{ latitude: number; longitude: number } | null>(null);
 
-  React.useEffect(() => {
-    getCurrentLocation();
+  useEffect(() => {
+    requestLocationPermission();
   }, []);
+
+  const requestLocationPermission = async () => {
+    try {
+      const permission =
+        Platform.OS === 'ios'
+          ? PERMISSIONS.IOS.LOCATION_WHEN_IN_USE
+          : PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+
+      const result = await request(permission);
+      if (result === RESULTS.GRANTED) {
+        getCurrentLocation();
+      }
+    } catch (error) {
+      console.error('Error requesting location permission:', error);
+    }
+  };
 
   const getCurrentLocation = () => {
     Geolocation.getCurrentPosition(
       (position) => {
+        const newLocation = {
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+        };
+        setCurrentUserLocation(newLocation);
+        setSpotLocation(newLocation);
         setLocation({
           latitude: position.coords.latitude,
           longitude: position.coords.longitude,
           latitudeDelta: 0.01,
           longitudeDelta: 0.01,
         });
-        setIsDraggable(true);
       },
       (error) => {
         console.error('Error getting location:', error);
-      }
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
     );
+  };
+
+  const centerOnCurrentLocation = () => {
+    if (currentUserLocation) {
+      setSpotLocation(currentUserLocation);
+      setLocation({
+        latitude: currentUserLocation.latitude,
+        longitude: currentUserLocation.longitude,
+        latitudeDelta: 0.01,
+        longitudeDelta: 0.01,
+      });
+    } else {
+      getCurrentLocation();
+    }
   };
 
   const pickImage = async () => {
@@ -106,8 +147,8 @@ export default function AddSpotScreen() {
         userPhotoURL: user.photoURL || undefined,
         name: name.trim(),
         description: description.trim(),
-        latitude: location.latitude,
-        longitude: location.longitude,
+        latitude: spotLocation.latitude,
+        longitude: spotLocation.longitude,
         category,
         rating,
         ratingCount: 1,
@@ -208,31 +249,45 @@ export default function AddSpotScreen() {
       </View>
 
       <View style={styles.section}>
-        <Text style={styles.label}>Position</Text>
+        <Text style={styles.label}>Position du spot</Text>
+        <Text style={styles.hint}>
+          Appuyez longuement sur le point pour le déplacer ou utilisez le bouton pour centrer sur votre position
+        </Text>
         <View style={styles.mapContainer}>
           <MapView
             provider={PROVIDER_GOOGLE}
             style={styles.map}
             region={location}
-            onRegionChangeComplete={setLocation}>
+            onRegionChangeComplete={setLocation}
+            onPress={(e) => {
+              // Permettre de placer le spot en cliquant sur la carte
+              setSpotLocation(e.nativeEvent.coordinate);
+            }}>
+            {/* Marker pour la position actuelle de l'utilisateur */}
+            {currentUserLocation && (
+              <Marker
+                coordinate={currentUserLocation}
+                title="Ma position"
+                pinColor="#007AFF"
+              />
+            )}
+            {/* Marker draggable pour le spot */}
             <Marker
-              coordinate={{
-                latitude: location.latitude,
-                longitude: location.longitude,
-              }}
-              draggable={isDraggable}
+              coordinate={spotLocation}
+              draggable={true}
               onDragEnd={(e) => {
-                setLocation({
-                  ...location,
-                  latitude: e.nativeEvent.coordinate.latitude,
-                  longitude: e.nativeEvent.coordinate.longitude,
-                });
+                setSpotLocation(e.nativeEvent.coordinate);
               }}
-            />
+              title="Position du spot">
+              <View style={styles.spotMarker}>
+                <View style={styles.spotMarkerDot} />
+                <View style={styles.spotMarkerPulse} />
+              </View>
+            </Marker>
           </MapView>
           <TouchableOpacity
             style={styles.locationButton}
-            onPress={getCurrentLocation}>
+            onPress={centerOnCurrentLocation}>
             <Icon name="my-location" size={24} color="#007AFF" />
           </TouchableOpacity>
         </View>
@@ -342,6 +397,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  hint: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 8,
+    fontStyle: 'italic',
+  },
+  spotMarker: {
+    width: 40,
+    height: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  spotMarkerDot: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
+    backgroundColor: '#FF3B30',
+    borderWidth: 3,
+    borderColor: '#fff',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 3,
+    zIndex: 2,
+  },
+  spotMarkerPulse: {
+    position: 'absolute',
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#FF3B30',
+    opacity: 0.3,
+    zIndex: 1,
   },
   submitButton: {
     backgroundColor: '#007AFF',

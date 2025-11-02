@@ -12,14 +12,16 @@ interface SpotMarkerProps {
 export default function SpotMarker({ category, rating, photos }: SpotMarkerProps) {
   const getCategoryColor = () => {
     switch (category) {
-      case 'Freestyle':
-        return '#FF6B6B';
-      case 'Bando':
-        return '#4ECDC4';
       case 'Race':
-        return '#45B7D1';
+        return '#FF0000'; // Rouge pour Race
       case 'Cinematique':
-        return '#F9CA24';
+        return '#8B00FF'; // Violet pour Cinématique
+      case 'Freestyle':
+        return '#00FF00'; // Vert pour Freestyle
+      case 'Bando':
+        return '#FFA500'; // Orange pour Bando
+      case 'Autre':
+        return '#808080'; // Gris pour Autre
       default:
         return '#95A5A6';
     }
