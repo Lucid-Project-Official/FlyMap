@@ -42,11 +42,11 @@
     "react-native-worklets": "^0.5.2"
   },
   "devDependencies": {
-    "@babel/core": "^7.23.3",
-    "@babel/plugin-syntax-flow": "^7.27.1",
-    "@babel/plugin-transform-flow-strip-types": "^7.27.1",
-    "@babel/preset-env": "^7.23.3",
-    "@babel/runtime": "^7.23.2",
+    "@babel/core": "^7.24.0",
+    "@babel/plugin-syntax-flow": "^7.24.0",
+    "@babel/plugin-transform-flow-strip-types": "^7.24.0",
+    "@babel/preset-env": "^7.24.0",
+    "@babel/runtime": "^7.24.0",
     "@react-native-community/cli": "latest",
     "@react-native/eslint-config": "^0.78.0",
     "@react-native/metro-config": "^0.78.0",
