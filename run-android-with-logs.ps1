@@ -114,13 +114,19 @@ if ($devices.Count -gt 0) {
             break
         }
     }
-    
-    # Nettoyer les connexions ADB
-    adb kill-server 2>&1 | Out-Null
-    Start-Sleep -Seconds 2
-    adb start-server 2>&1 | Out-Null
-    Start-Sleep -Seconds 2
 }
+
+# Tuer tous les processus qemu-system (émulateurs) qui pourraient encore tourner
+Write-Host "   Arrêt de tous les processus émulateur..." -ForegroundColor Cyan
+Get-Process -Name "qemu-system*" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+Start-Sleep -Seconds 2
+
+# Nettoyer les connexions ADB
+Write-Host "   Nettoyage des connexions ADB..." -ForegroundColor Cyan
+adb kill-server 2>&1 | Out-Null
+Start-Sleep -Seconds 2
+adb start-server 2>&1 | Out-Null
+Start-Sleep -Seconds 2
 
 # Trouver le chemin de l'émulateur
 $emulatorPath = Get-EmulatorPath
@@ -133,46 +139,97 @@ if ($emulatorPath -and (Test-Path $emulatorPath)) {
     
     if ($avds.Count -gt 0) {
         $firstAvd = $avds[0]
-        Write-Host "   Relance de l'émulateur avec reset complet: $firstAvd" -ForegroundColor Cyan
-        Write-Host "   (Reset complet des données utilisateur)" -ForegroundColor Yellow
+        Write-Host "   Lancement de l'émulateur: $firstAvd" -ForegroundColor Cyan
+        Write-Host "   (Reset complet des données après démarrage)" -ForegroundColor Yellow
         Write-Host "   (Cela peut prendre 30-60 secondes...)" -ForegroundColor Yellow
         Write-Host ""
         
-        # Lancer l'émulateur avec wipe-data pour un reset complet
-        Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd", "-wipe-data" -WindowStyle Normal
+        # Lancer l'émulateur normalement (sans wipe-data pour éviter les problèmes)
+        # On utilisera -no-snapshot-load pour forcer un démarrage propre
+        Write-Host "   Démarrage de l'émulateur..." -ForegroundColor Cyan
+        $emulatorProcess = Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd", "-no-snapshot-load" -WindowStyle Normal -PassThru
+        
+        if ($emulatorProcess) {
+            Write-Host "   Processus émulateur lancé (PID: $($emulatorProcess.Id))" -ForegroundColor Green
+        }
         
         # Attendre que l'émulateur soit pret
-        Write-Host "   Attente du demarrage de l'emulateur (reset complet)..." -ForegroundColor Cyan
-        $maxWait = 180  # Plus de temps car wipe-data prend plus de temps
+        Write-Host "   Attente du démarrage de l'émulateur..." -ForegroundColor Cyan
+        $maxWait = 120
         $waited = 0
+        $emulatorReady = $false
+        
         while ($waited -lt $maxWait) {
-            Start-Sleep -Seconds 5
-            $waited += 5
+            Start-Sleep -Seconds 3
+            $waited += 3
+            
+            # Vérifier si le processus tourne toujours
+            $processRunning = Get-Process -Id $emulatorProcess.Id -ErrorAction SilentlyContinue
+            if (-not $processRunning) {
+                Write-Host "   ERREUR: Le processus émulateur a crash!" -ForegroundColor Red
+                Write-Host "   Vérifiez les logs de l'émulateur pour plus d'informations" -ForegroundColor Yellow
+                exit 1
+            }
+            
+            # Vérifier si un appareil est connecté
             $devices = adb devices | Select-String -Pattern "device$"
             if ($devices.Count -gt 0) {
-                Write-Host "   Emulateur pret apres $waited secondes (reset complet effectue) !" -ForegroundColor Green
-                # Attendre un peu plus pour que l'émulateur soit complètement prêt
-                Start-Sleep -Seconds 10
-                break
+                $deviceId = ($devices[0] -split "\s+")[0]
+                Write-Host "   Émulateur détecté: $deviceId" -ForegroundColor Green
+                
+                # Vérifier que l'émulateur est complètement prêt (boot complet)
+                Write-Host "   Attente du boot complet de l'émulateur..." -ForegroundColor Cyan
+                $bootComplete = $false
+                $bootWait = 0
+                $maxBootWait = 60
+                
+                while ($bootWait -lt $maxBootWait) {
+                    $bootStatus = adb -s $deviceId shell getprop sys.boot_completed 2>&1
+                    if ($bootStatus -eq "1") {
+                        $bootComplete = $true
+                        Write-Host "   Émulateur complètement démarré après $waited secondes !" -ForegroundColor Green
+                        break
+                    }
+                    Start-Sleep -Seconds 2
+                    $bootWait += 2
+                }
+                
+                if ($bootComplete) {
+                    # Faire un factory reset via ADB maintenant que l'émulateur est prêt
+                    Write-Host "   Réinitialisation des données utilisateur (factory reset)..." -ForegroundColor Cyan
+                    adb -s $deviceId shell "wipe data" 2>&1 | Out-Null
+                    Start-Sleep -Seconds 3
+                    Write-Host "   Reset complet effectué !" -ForegroundColor Green
+                    $emulatorReady = $true
+                    break
+                } else {
+                    Write-Host "   ATTENTION: Boot complet non détecté, mais l'émulateur semble démarré" -ForegroundColor Yellow
+                    $emulatorReady = $true
+                    break
+                }
             }
+            
             if ($waited % 15 -eq 0) {
                 Write-Host "   Attente... ($waited/$maxWait secondes)" -ForegroundColor Gray
             }
         }
         
-        if ($devices.Count -eq 0) {
-            Write-Host "   ERREUR: L'emulateur n'a pas demarre dans les delais" -ForegroundColor Red
-            Write-Host "   Veuillez demarrer l'emulateur manuellement et relancer" -ForegroundColor Yellow
+        if (-not $emulatorReady) {
+            Write-Host "   ERREUR: L'émulateur n'a pas démarré dans les délais" -ForegroundColor Red
+            Write-Host "   Le processus tourne-t-il toujours ? (Vérifiez la fenêtre de l'émulateur)" -ForegroundColor Yellow
+            Write-Host "   Si l'émulateur est visible mais ne se connecte pas, vérifiez:" -ForegroundColor Yellow
+            Write-Host "   - Les logs de l'émulateur pour des erreurs" -ForegroundColor Yellow
+            Write-Host "   - Que les ports ne sont pas bloqués" -ForegroundColor Yellow
             exit 1
         }
     } else {
         Write-Host "   ERREUR: Aucun AVD disponible" -ForegroundColor Red
-        Write-Host "   Veuillez creer un AVD avec Android Studio" -ForegroundColor Yellow
+        Write-Host "   Veuillez créer un AVD avec Android Studio" -ForegroundColor Yellow
         exit 1
     }
 } else {
-    Write-Host "   ATTENTION: Emulateur non trouve" -ForegroundColor Yellow
-    Write-Host "   Verification des appareils connectes..." -ForegroundColor Cyan
+    Write-Host "   ATTENTION: Emulateur non trouvé" -ForegroundColor Yellow
+    Write-Host "   Vérification des appareils connectés..." -ForegroundColor Cyan
 }
 
 # Verifier qu'un appareil/emulateur est connecte
