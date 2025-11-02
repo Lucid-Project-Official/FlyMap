@@ -68,16 +68,6 @@ export class FirestoreService {
         query = query.where('category', '==', filters.category);
       }
 
-      // Filtre par rayon géographique (approximatif)
-      if (filters.location) {
-        // Pour une implémentation plus précise, utiliser GeoHash ou géoquerie
-        const { latitude, longitude, radiusKm } = filters.location;
-        query = query.where('latitude', '>=', latitude - radiusKm / 111)
-                     .where('latitude', '<=', latitude + radiusKm / 111)
-                     .where('longitude', '>=', longitude - radiusKm / 111)
-                     .where('longitude', '<=', longitude + radiusKm / 111);
-      }
-
       const snapshot = await query.orderBy('createdAt', 'desc').get();
       let spots = snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
@@ -85,6 +75,35 @@ export class FirestoreService {
         createdAt: doc.data()?.createdAt?.toDate() || new Date(),
         updatedAt: doc.data()?.updatedAt?.toDate() || new Date(),
       })) as Spot[];
+
+      // Filtre par rayon géographique (côté client car Firestore ne permet qu'un filtre d'inégalité par requête)
+      if (filters.location) {
+        const { latitude, longitude, radiusKm } = filters.location;
+        const distanceThreshold = radiusKm / 111; // Approximation en degrés
+        
+        // Fonction de calcul de distance (formule de Haversine simplifiée)
+        const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+          const R = 6371; // Rayon de la Terre en km
+          const dLat = (lat2 - lat1) * Math.PI / 180;
+          const dLon = (lon2 - lon1) * Math.PI / 180;
+          const a = 
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+            Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+            Math.sin(dLon / 2) * Math.sin(dLon / 2);
+          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+          return R * c;
+        };
+
+        spots = spots.filter(spot => {
+          const distance = calculateDistance(
+            latitude,
+            longitude,
+            spot.latitude,
+            spot.longitude
+          );
+          return distance <= radiusKm;
+        });
+      }
 
       // Filtre par mot-clé (recherche textuelle)
       if (filters.searchQuery) {

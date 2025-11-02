@@ -14,8 +14,13 @@ export class StorageService {
   ): Promise<string> {
     try {
       const storageRef = storage().ref(`spots/${spotId}/photos/${filename}`);
-      const task = await storageRef.putFile(uri);
-      const downloadURL = await task.ref.getDownloadURL();
+      const task = storageRef.putFile(uri);
+      
+      // Attendre que le téléchargement soit terminé
+      await task;
+      
+      // Obtenir l'URL de téléchargement
+      const downloadURL = await storageRef.getDownloadURL();
       return downloadURL;
     } catch (error) {
       console.error('Error uploading image:', error);
@@ -34,8 +39,13 @@ export class StorageService {
   ): Promise<string> {
     try {
       const storageRef = storage().ref(`spots/${spotId}/videos/${filename}`);
-      const task = await storageRef.putFile(uri);
-      const downloadURL = await task.ref.getDownloadURL();
+      const task = storageRef.putFile(uri);
+      
+      // Attendre que le téléchargement soit terminé
+      await task;
+      
+      // Obtenir l'URL de téléchargement
+      const downloadURL = await storageRef.getDownloadURL();
       return downloadURL;
     } catch (error) {
       console.error('Error uploading video:', error);
