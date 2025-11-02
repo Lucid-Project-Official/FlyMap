@@ -44,19 +44,10 @@ if (-not (Test-Path $autolinkingFile)) {
 }
 Write-Host ""
 
-# Verifier qu'un appareil/emulateur est connecte
-Write-Host "2. Verification d'un appareil Android..." -ForegroundColor Yellow
-$devices = adb devices | Select-String -Pattern "device$"
-
-if ($devices.Count -eq 0) {
-    Write-Host "   Aucun appareil connecte" -ForegroundColor Yellow
-    Write-Host "   Lancement automatique de l'emulateur..." -ForegroundColor Cyan
-    Write-Host ""
-    
-    # Trouver l'emulateur disponible
+# Fonction pour obtenir le chemin de l'émulateur
+function Get-EmulatorPath {
     $emulatorPath = Get-Command emulator -ErrorAction SilentlyContinue
     if (-not $emulatorPath) {
-        # Chercher dans les variables d'environnement communes
         $androidHome = $env:ANDROID_HOME
         if (-not $androidHome) {
             $androidHome = $env:ANDROID_SDK_ROOT
@@ -64,94 +55,142 @@ if ($devices.Count -eq 0) {
         if ($androidHome) {
             $emulatorPath = "$androidHome\emulator\emulator.exe"
             if (-not (Test-Path $emulatorPath)) {
-                $emulatorPath = $null
+                return $null
             }
+        } else {
+            return $null
         }
     } else {
         $emulatorPath = $emulatorPath.Source
     }
+    return $emulatorPath
+}
+
+# Fonction pour obtenir la liste des AVD disponibles
+function Get-AvailableAvds {
+    param([string]$emulatorPath)
+    if (-not $emulatorPath -or -not (Test-Path $emulatorPath)) {
+        return @()
+    }
+    $avdOutput = & "$emulatorPath" -list-avds 2>&1
+    $avds = @()
+    $avdOutput | ForEach-Object {
+        if ($_ -and $_.ToString().Trim() -ne "") {
+            $avds += $_.ToString().Trim()
+        }
+    }
+    return $avds
+}
+
+# Étape 2: Reset complet de l'émulateur si nécessaire
+Write-Host "2. Reset complet de l'émulateur..." -ForegroundColor Yellow
+$devices = adb devices | Select-String -Pattern "device$"
+
+# Si des appareils/émulateurs sont connectés, les arrêter pour un reset complet
+if ($devices.Count -gt 0) {
+    Write-Host "   Arrêt de tous les émulateurs connectés..." -ForegroundColor Cyan
     
-    if ($emulatorPath -and (Test-Path $emulatorPath)) {
-        Write-Host "   Emulateur trouve: $emulatorPath" -ForegroundColor Green
-        
-        # Lister les AVD disponibles
-        $avdOutput = & "$emulatorPath" -list-avds 2>&1
-        $avds = @()
-        $avdOutput | ForEach-Object {
-            if ($_ -and $_.ToString().Trim() -ne "") {
-                $avds += $_.ToString().Trim()
-            }
+    # Obtenir la liste des appareils connectés
+    $deviceList = adb devices | Select-String -Pattern "device$" | ForEach-Object {
+        ($_ -split "\s+")[0]
+    }
+    
+    # Arrêter chaque appareil
+    foreach ($device in $deviceList) {
+        Write-Host "   Arrêt de l'appareil: $device" -ForegroundColor Gray
+        adb -s $device emu kill 2>&1 | Out-Null
+    }
+    
+    # Attendre que tous les émulateurs soient complètement arrêtés
+    Write-Host "   Attente de l'arrêt complet..." -ForegroundColor Cyan
+    $maxWait = 30
+    $waited = 0
+    while ($waited -lt $maxWait) {
+        Start-Sleep -Seconds 2
+        $waited += 2
+        $remainingDevices = adb devices | Select-String -Pattern "device$"
+        if ($remainingDevices.Count -eq 0) {
+            Write-Host "   Tous les émulateurs sont arrêtés" -ForegroundColor Green
+            break
         }
-        
-        if ($avds.Count -gt 0) {
-            $firstAvd = $avds[0]
-            Write-Host "   Demarrage de l'emulateur: $firstAvd" -ForegroundColor Cyan
-            Write-Host "   (Cela peut prendre 30-60 secondes...)" -ForegroundColor Yellow
-            Write-Host ""
-            
-            # Lancer l'emulateur en arriere-plan
-            Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd" -WindowStyle Normal
-            
-            # Attendre que l'emulateur soit pret
-            Write-Host "   Attente du demarrage de l'emulateur..." -ForegroundColor Cyan
-            $maxWait = 120
-            $waited = 0
-            while ($waited -lt $maxWait) {
-                Start-Sleep -Seconds 3
-                $waited += 3
-                $devices = adb devices | Select-String -Pattern "device$"
-                if ($devices.Count -gt 0) {
-                    Write-Host "   Emulateur pret apres $waited secondes !" -ForegroundColor Green
-                    break
-                }
-                if ($waited % 15 -eq 0) {
-                    Write-Host "   Attente... ($waited/$maxWait secondes)" -ForegroundColor Gray
-                }
-            }
-            
-            if ($devices.Count -eq 0) {
-                Write-Host "   ERREUR: L'emulateur n'a pas demarre dans les delais" -ForegroundColor Red
-                Write-Host "   Veuillez demarrer l'emulateur manuellement et relancer" -ForegroundColor Yellow
-                exit 1
-            }
-        } else {
-            Write-Host "   ERREUR: Aucun AVD disponible" -ForegroundColor Red
-            Write-Host "   Veuillez creer un AVD avec Android Studio" -ForegroundColor Yellow
-            exit 1
-        }
-    } else {
-        Write-Host "   ATTENTION: Emulateur non trouve" -ForegroundColor Yellow
-        Write-Host "   Attente de la connexion d'un appareil/emulateur..." -ForegroundColor Cyan
+    }
+    
+    # Nettoyer les connexions ADB
+    adb kill-server 2>&1 | Out-Null
+    Start-Sleep -Seconds 2
+    adb start-server 2>&1 | Out-Null
+    Start-Sleep -Seconds 2
+}
+
+# Trouver le chemin de l'émulateur
+$emulatorPath = Get-EmulatorPath
+
+if ($emulatorPath -and (Test-Path $emulatorPath)) {
+    Write-Host "   Emulateur trouve: $emulatorPath" -ForegroundColor Green
+    
+    # Obtenir la liste des AVD disponibles
+    $avds = Get-AvailableAvds -emulatorPath $emulatorPath
+    
+    if ($avds.Count -gt 0) {
+        $firstAvd = $avds[0]
+        Write-Host "   Relance de l'émulateur avec reset complet: $firstAvd" -ForegroundColor Cyan
+        Write-Host "   (Reset complet des données utilisateur)" -ForegroundColor Yellow
+        Write-Host "   (Cela peut prendre 30-60 secondes...)" -ForegroundColor Yellow
         Write-Host ""
         
-        # Attendre qu'un appareil se connecte
-        $maxWait = 60
+        # Lancer l'émulateur avec wipe-data pour un reset complet
+        Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd", "-wipe-data" -WindowStyle Normal
+        
+        # Attendre que l'émulateur soit pret
+        Write-Host "   Attente du demarrage de l'emulateur (reset complet)..." -ForegroundColor Cyan
+        $maxWait = 180  # Plus de temps car wipe-data prend plus de temps
         $waited = 0
         while ($waited -lt $maxWait) {
-            Start-Sleep -Seconds 2
-            $waited += 2
+            Start-Sleep -Seconds 5
+            $waited += 5
             $devices = adb devices | Select-String -Pattern "device$"
             if ($devices.Count -gt 0) {
-                Write-Host "   Appareil detecte apres $waited secondes !" -ForegroundColor Green
+                Write-Host "   Emulateur pret apres $waited secondes (reset complet effectue) !" -ForegroundColor Green
+                # Attendre un peu plus pour que l'émulateur soit complètement prêt
+                Start-Sleep -Seconds 10
                 break
             }
-            if ($waited % 10 -eq 0) {
+            if ($waited % 15 -eq 0) {
                 Write-Host "   Attente... ($waited/$maxWait secondes)" -ForegroundColor Gray
             }
         }
         
         if ($devices.Count -eq 0) {
-            Write-Host "   ERREUR: Aucun appareil n'a ete connecte dans les delais" -ForegroundColor Red
+            Write-Host "   ERREUR: L'emulateur n'a pas demarre dans les delais" -ForegroundColor Red
+            Write-Host "   Veuillez demarrer l'emulateur manuellement et relancer" -ForegroundColor Yellow
             exit 1
         }
+    } else {
+        Write-Host "   ERREUR: Aucun AVD disponible" -ForegroundColor Red
+        Write-Host "   Veuillez creer un AVD avec Android Studio" -ForegroundColor Yellow
+        exit 1
     }
+} else {
+    Write-Host "   ATTENTION: Emulateur non trouve" -ForegroundColor Yellow
+    Write-Host "   Verification des appareils connectes..." -ForegroundColor Cyan
+}
+
+# Verifier qu'un appareil/emulateur est connecte
+Write-Host ""
+Write-Host "3. Verification d'un appareil Android..." -ForegroundColor Yellow
+$devices = adb devices | Select-String -Pattern "device$"
+
+if ($devices.Count -eq 0) {
+    Write-Host "   Aucun appareil connecte" -ForegroundColor Yellow
+    Write-Host "   Veuillez demarrer un appareil ou un emulateur manuellement" -ForegroundColor Yellow
+    exit 1
 } else {
     Write-Host "   Appareil Android detecte" -ForegroundColor Green
 }
 Write-Host ""
 
 # Lancer adb logcat dans une nouvelle fenetre PowerShell
-Write-Host "3. Lancement des logs ADB dans une nouvelle fenetre..." -ForegroundColor Yellow
+Write-Host "4. Lancement des logs ADB dans une nouvelle fenetre..." -ForegroundColor Yellow
 $logcatScriptContent = @'
 $host.ui.RawUI.WindowTitle = "ADB Logcat - FlyMap"
 $host.ui.RawUI.ForegroundColor = "White"
@@ -180,7 +219,7 @@ Start-Sleep -Seconds 2
 
 # Lancer l'application Android avec react-native run-android (gestion automatique complete)
 # react-native run-android lance automatiquement Metro bundler et l'application
-Write-Host "4. Lancement de l'application Android..." -ForegroundColor Yellow
+Write-Host "5. Lancement de l'application Android..." -ForegroundColor Yellow
 Write-Host "   (Metro bundler sera lance automatiquement)" -ForegroundColor Cyan
 Write-Host "   (Installation, compilation et lancement automatiques)" -ForegroundColor Cyan
 Write-Host ""
