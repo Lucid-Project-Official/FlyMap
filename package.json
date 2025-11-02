@@ -6,6 +6,7 @@
     "setup": "powershell -ExecutionPolicy Bypass -File ./setup-complete.ps1",
     "android": "powershell -ExecutionPolicy Bypass -File ./run-android-with-logs.ps1",
     "android:clean": "powershell -ExecutionPolicy Bypass -File ./run-android-with-logs.ps1 -Clean",
+    "android:no-reset": "powershell -ExecutionPolicy Bypass -File ./run-android-with-logs.ps1 -NoReset",
     "android:direct": "react-native run-android",
     "android:test": "powershell -ExecutionPolicy Bypass -File ./test-runtime.ps1",
     "ios": "react-native run-ios",
