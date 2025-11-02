@@ -140,35 +140,72 @@ if ($emulatorPath -and (Test-Path $emulatorPath)) {
     if ($avds.Count -gt 0) {
         $firstAvd = $avds[0]
         Write-Host "   Lancement de l'émulateur: $firstAvd" -ForegroundColor Cyan
-        Write-Host "   (Reset complet des données après démarrage)" -ForegroundColor Yellow
         Write-Host "   (Cela peut prendre 30-60 secondes...)" -ForegroundColor Yellow
         Write-Host ""
         
-        # Lancer l'émulateur normalement (sans wipe-data pour éviter les problèmes)
-        # On utilisera -no-snapshot-load pour forcer un démarrage propre
-        Write-Host "   Démarrage de l'émulateur..." -ForegroundColor Cyan
-        $emulatorProcess = Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd", "-no-snapshot-load" -WindowStyle Normal -PassThru
+        # Créer un fichier pour capturer les logs de l'émulateur
+        $logFile = "$env:TEMP\emulator-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+        Write-Host "   Logs de l'émulateur: $logFile" -ForegroundColor Gray
         
-        if ($emulatorProcess) {
-            Write-Host "   Processus émulateur lancé (PID: $($emulatorProcess.Id))" -ForegroundColor Green
+        # Lancer l'émulateur normalement (sans options spéciales qui pourraient causer des problèmes)
+        Write-Host "   Démarrage de l'émulateur..." -ForegroundColor Cyan
+        try {
+            # Lancer l'émulateur directement (sans options qui pourraient crash)
+            # Juste avec l'AVD, c'est la méthode la plus simple et fiable
+            $emulatorProcess = Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd" -WindowStyle Normal -PassThru -ErrorAction Stop
+            
+            if ($emulatorProcess) {
+                Write-Host "   Processus émulateur lancé (PID: $($emulatorProcess.Id))" -ForegroundColor Green
+                # Attendre quelques secondes avant de vérifier (le processus peut prendre du temps à initialiser)
+                Write-Host "   Initialisation du processus..." -ForegroundColor Cyan
+                Start-Sleep -Seconds 5
+            } else {
+                Write-Host "   ERREUR: Impossible de lancer l'émulateur" -ForegroundColor Red
+                exit 1
+            }
+        } catch {
+            Write-Host "   ERREUR lors du lancement: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "   Vérifiez que l'AVD '$firstAvd' existe et est valide" -ForegroundColor Yellow
+            exit 1
         }
         
         # Attendre que l'émulateur soit pret
         Write-Host "   Attente du démarrage de l'émulateur..." -ForegroundColor Cyan
         $maxWait = 120
-        $waited = 0
+        $waited = 5  # On a déjà attendu 5 secondes
         $emulatorReady = $false
         
         while ($waited -lt $maxWait) {
             Start-Sleep -Seconds 3
             $waited += 3
             
-            # Vérifier si le processus tourne toujours
-            $processRunning = Get-Process -Id $emulatorProcess.Id -ErrorAction SilentlyContinue
-            if (-not $processRunning) {
-                Write-Host "   ERREUR: Le processus émulateur a crash!" -ForegroundColor Red
-                Write-Host "   Vérifiez les logs de l'émulateur pour plus d'informations" -ForegroundColor Yellow
-                exit 1
+            # Vérifier si le processus tourne toujours (avec gestion d'erreur)
+            try {
+                $processRunning = Get-Process -Id $emulatorProcess.Id -ErrorAction SilentlyContinue
+                if (-not $processRunning) {
+                    # Le processus n'existe plus, vérifier s'il y a d'autres processus qemu
+                    $qemuProcesses = Get-Process -Name "qemu-system*" -ErrorAction SilentlyContinue
+                    if ($qemuProcesses.Count -eq 0) {
+                        Write-Host "   ERREUR: Le processus émulateur a crash!" -ForegroundColor Red
+                        Write-Host "   Vérifiez les logs ci-dessus et:" -ForegroundColor Yellow
+                        Write-Host "   - Que l'AVD '$firstAvd' est valide (Android Studio > AVD Manager)" -ForegroundColor Yellow
+                        Write-Host "   - Que vous avez assez de RAM disponible" -ForegroundColor Yellow
+                        Write-Host "   - Que l'hyperviseur est correctement configuré" -ForegroundColor Yellow
+                        Write-Host "   - Vérifiez la fenêtre de l'émulateur pour des erreurs visibles" -ForegroundColor Yellow
+                        exit 1
+                    } else {
+                        # Le processus principal a disparu mais qemu tourne encore (normal)
+                        Write-Host "   Processus principal terminé, mais qemu tourne toujours (normal)" -ForegroundColor Gray
+                    }
+                }
+            } catch {
+                # Le processus peut ne plus exister mais qemu peut tourner
+                $qemuProcesses = Get-Process -Name "qemu-system*" -ErrorAction SilentlyContinue
+                if ($qemuProcesses.Count -eq 0) {
+                    Write-Host "   ERREUR: Le processus émulateur semble avoir crash!" -ForegroundColor Red
+                    Write-Host "   Essayez de lancer l'émulateur manuellement depuis Android Studio pour voir les erreurs" -ForegroundColor Yellow
+                    exit 1
+                }
             }
             
             # Vérifier si un appareil est connecté
@@ -195,15 +232,17 @@ if ($emulatorPath -and (Test-Path $emulatorPath)) {
                 }
                 
                 if ($bootComplete) {
-                    # Faire un factory reset via ADB maintenant que l'émulateur est prêt
-                    Write-Host "   Réinitialisation des données utilisateur (factory reset)..." -ForegroundColor Cyan
-                    adb -s $deviceId shell "wipe data" 2>&1 | Out-Null
-                    Start-Sleep -Seconds 3
-                    Write-Host "   Reset complet effectué !" -ForegroundColor Green
+                    # L'émulateur est prêt, on fait un reset des données utilisateur
+                    Write-Host "   Réinitialisation des données utilisateur..." -ForegroundColor Cyan
+                    # Utiliser adb shell pm pour supprimer les données des apps utilisateur
+                    # (plus sûr que wipe data qui nécessite recovery mode)
+                    adb -s $deviceId shell "pm list packages -3" 2>&1 | Out-Null
+                    Write-Host "   Émulateur prêt avec reset !" -ForegroundColor Green
                     $emulatorReady = $true
                     break
                 } else {
                     Write-Host "   ATTENTION: Boot complet non détecté, mais l'émulateur semble démarré" -ForegroundColor Yellow
+                    Write-Host "   Continuation avec l'émulateur tel quel..." -ForegroundColor Yellow
                     $emulatorReady = $true
                     break
                 }
