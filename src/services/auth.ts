@@ -55,8 +55,19 @@ export class AuthService {
         console.warn('[AuthService] Firebase Auth non installé ou non disponible');
       }
 
-      // Google Sign-In sera configuré dynamiquement lors de la connexion
-      console.log('[AuthService] Google Sign-In sera configuré à la première utilisation');
+      // Configure Google Sign-In avec le Web Client ID
+      if (GoogleSignin) {
+        try {
+          GoogleSignin.configure({
+            webClientId: '297962435689-41rb56dp4d07cdlhj6if0dha21jn79ld.apps.googleusercontent.com',
+          });
+          console.log('[AuthService] Google Sign-In configuré');
+        } catch (googleError) {
+          console.warn('[AuthService] Erreur lors de la configuration de Google Sign-In:', googleError);
+        }
+      } else {
+        console.warn('[AuthService] Google Sign-In non disponible');
+      }
       
       console.log('[AuthService] Initialisation terminée avec succès');
       return true;
