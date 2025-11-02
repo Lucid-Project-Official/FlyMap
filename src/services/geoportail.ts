@@ -101,6 +101,7 @@ export class GeoportailService {
         if (inside) return true;
       } else if (restriction.zone.type === 'circle') {
         // Calcul de distance pour cercle
+        const { coordinates } = restriction.zone;
         const center = coordinates[0];
         const radius = coordinates[1][0]; // Le rayon est dans la première coordonnée
         const distance = this.calculateDistance(latitude, longitude, center[1], center[0]);

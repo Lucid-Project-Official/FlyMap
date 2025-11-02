@@ -1,4 +1,4 @@
-import firestore from '@react-native-firebase/firestore';
+import firestore, { FirebaseFirestoreTypes } from '@react-native-firebase/firestore';
 import { Spot, Review, UserActivity, FilterOptions, SpotCategory } from '../types';
 
 export class FirestoreService {
@@ -61,7 +61,7 @@ export class FirestoreService {
 
   static async getFilteredSpots(filters: FilterOptions): Promise<Spot[]> {
     try {
-      let query: firestore.FirebaseFirestoreTypes.Query = firestore().collection('spots');
+      let query: FirebaseFirestoreTypes.Query = firestore().collection('spots');
 
       // Filtre par catégorie
       if (filters.category) {
@@ -79,7 +79,7 @@ export class FirestoreService {
       }
 
       const snapshot = await query.orderBy('createdAt', 'desc').get();
-      let spots = snapshot.docs.map(doc => ({
+      let spots = snapshot.docs.map((doc: FirebaseFirestoreTypes.QueryDocumentSnapshot) => ({
         id: doc.id,
         ...doc.data(),
         createdAt: doc.data()?.createdAt?.toDate() || new Date(),
