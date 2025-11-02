@@ -145,27 +145,85 @@ if ($emulatorPath -and (Test-Path $emulatorPath)) {
         
         # Créer un fichier pour capturer les logs de l'émulateur
         $logFile = "$env:TEMP\emulator-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
+        $errorFile = "$env:TEMP\emulator-errors-$(Get-Date -Format 'yyyyMMdd-HHmmss').log"
         Write-Host "   Logs de l'émulateur: $logFile" -ForegroundColor Gray
         
         # Lancer l'émulateur normalement (sans options spéciales qui pourraient causer des problèmes)
         Write-Host "   Démarrage de l'émulateur..." -ForegroundColor Cyan
+        Write-Host "   AVD: $firstAvd" -ForegroundColor Gray
+        
         try {
-            # Lancer l'émulateur directement (sans options qui pourraient crash)
-            # Juste avec l'AVD, c'est la méthode la plus simple et fiable
-            $emulatorProcess = Start-Process -FilePath "$emulatorPath" -ArgumentList "-avd", "$firstAvd" -WindowStyle Normal -PassThru -ErrorAction Stop
+            # Vérifier d'abord que l'AVD existe vraiment
+            Write-Host "   Vérification de l'AVD..." -ForegroundColor Cyan
+            $avdCheck = & "$emulatorPath" -list-avds 2>&1
+            if ($avdCheck -notmatch $firstAvd) {
+                Write-Host "   ATTENTION: L'AVD '$firstAvd' pourrait ne pas exister" -ForegroundColor Yellow
+                Write-Host "   AVD disponibles:" -ForegroundColor Yellow
+                $avdCheck | ForEach-Object { Write-Host "     - $_" -ForegroundColor Gray }
+            }
+            
+            # Créer un script batch pour lancer l'émulateur avec capture des erreurs
+            $batchScript = @"
+@echo off
+echo Démarrage de l'émulateur: $firstAvd
+"$emulatorPath" -avd "$firstAvd" > "$logFile" 2> "$errorFile"
+echo Code de retour: %ERRORLEVEL%
+"@
+            
+            $batchFile = "$env:TEMP\launch-emulator-$(Get-Date -Format 'yyyyMMdd-HHmmss').bat"
+            Set-Content -Path $batchFile -Value $batchScript -Encoding ASCII
+            
+            # Lancer l'émulateur directement (mode GUI normal)
+            # Note: On ne peut pas rediriger stdout/stderr pour un processus GUI
+            Write-Host "   Lancement en cours..." -ForegroundColor Cyan
+            Write-Host "   (Les erreurs s'afficheront dans la fenêtre de l'émulateur)" -ForegroundColor Gray
+            
+            # Essayer de lancer l'émulateur avec des options minimales
+            $emulatorProcess = Start-Process -FilePath "$emulatorPath" `
+                -ArgumentList "-avd", "$firstAvd" `
+                -WindowStyle Normal `
+                -PassThru `
+                -ErrorAction Stop
             
             if ($emulatorProcess) {
                 Write-Host "   Processus émulateur lancé (PID: $($emulatorProcess.Id))" -ForegroundColor Green
                 # Attendre quelques secondes avant de vérifier (le processus peut prendre du temps à initialiser)
-                Write-Host "   Initialisation du processus..." -ForegroundColor Cyan
-                Start-Sleep -Seconds 5
+                Write-Host "   Initialisation du processus (attente de 10 secondes)..." -ForegroundColor Cyan
+                Start-Sleep -Seconds 10
+                
+                # Vérifier immédiatement si le processus existe encore
+                $stillRunning = Get-Process -Id $emulatorProcess.Id -ErrorAction SilentlyContinue
+                if (-not $stillRunning) {
+                    Write-Host "   ATTENTION: Le processus principal s'est arrêté rapidement" -ForegroundColor Yellow
+                    Write-Host "   Vérification des processus qemu..." -ForegroundColor Cyan
+                    
+                    # Vérifier si qemu tourne
+                    $qemuProcesses = Get-Process -Name "qemu-system*" -ErrorAction SilentlyContinue
+                    if ($qemuProcesses.Count -eq 0) {
+                        Write-Host "   ERREUR: Aucun processus qemu détecté, l'émulateur a crash" -ForegroundColor Red
+                        Write-Host "   CONSEIL: Essayez de lancer l'émulateur manuellement depuis Android Studio" -ForegroundColor Yellow
+                        Write-Host "   Cela vous permettra de voir les erreurs dans la fenêtre de l'émulateur" -ForegroundColor Yellow
+                        Write-Host "   Ou vérifiez les logs dans: %USERPROFILE%\.android\avd\$firstAvd.avd\snapshots" -ForegroundColor Gray
+                    } else {
+                        Write-Host "   Processus qemu détecté, l'émulateur semble démarrer..." -ForegroundColor Green
+                    }
+                }
             } else {
                 Write-Host "   ERREUR: Impossible de lancer l'émulateur" -ForegroundColor Red
                 exit 1
             }
         } catch {
             Write-Host "   ERREUR lors du lancement: $($_.Exception.Message)" -ForegroundColor Red
+            Write-Host "   Détails: $($_.Exception.GetType().FullName)" -ForegroundColor Red
             Write-Host "   Vérifiez que l'AVD '$firstAvd' existe et est valide" -ForegroundColor Yellow
+            
+            # Afficher les AVD disponibles
+            Write-Host "   AVD disponibles:" -ForegroundColor Yellow
+            $availableAvds = Get-AvailableAvds -emulatorPath $emulatorPath
+            foreach ($avd in $availableAvds) {
+                Write-Host "     - $avd" -ForegroundColor Gray
+            }
+            
             exit 1
         }
         
